@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>A Birthday Surprise ❤️</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- Background hearts -->
+  <div id="hearts"></div>
+
+  <!-- GAME CONTAINER -->
+  <main class="game-container">
+
+    <!-- SCREEN 1: WELCOME -->
+    <section id="welcome" class="screen active">
+      <div class="card">
+        <div class="emoji">🎂</div>
+
+        <h1>Happy Birthday, My Love ❤️</h1>
+
+        <p>
+          I made a little adventure especially for you.
+        </p>
+
+        <p class="small-text">
+          Complete the challenges to unlock your final surprise. 🎁
+        </p>
+
+        <button onclick="startGame()">
+          Start Our Adventure ❤️
+        </button>
+      </div>
+    </section>
+
+
+    <!-- SCREEN 2: QUIZ -->
+    <section id="quiz" class="screen">
+
+      <div class="card">
+        <div class="level">LEVEL 1 ❤️</div>
+
+        <h2>How Well Do You Know Us?</h2>
+
+        <p class="question">
+          What is my favorite thing about you?
+        </p>
+
+        <div class="answers">
+          <button onclick="wrongAnswer()">Your cooking 😅</button>
+
+          <button onclick="correctAnswer()">
+            Everything about you ❤️
+          </button>
+
+          <button onclick="wrongAnswer()">Your ability to steal the blanket 😂</button>
+        </div>
+
+        <p id="quiz-message"></p>
+      </div>
+
+    </section>
+
+
+    <!-- SCREEN 3: MEMORY -->
+    <section id="memory" class="screen">
+
+      <div class="card">
+        <div class="level">LEVEL 2 📸</div>
+
+        <h2>A Special Memory</h2>
+
+        <p>
+          Click the heart to reveal a special memory.
+        </p>
+
+        <button class="heart-button" onclick="revealMemory()">
+          ❤️
+        </button>
+
+        <div id="memory-content" class="hidden">
+
+          <!-- Replace with your own photo -->
+          <img
+            src="images/photo1.jpg"
+            alt="Our memory"
+            class="memory-photo"
+          />
+
+          <p class="memory-message">
+            Every moment with you has become one of my favorite memories. ❤️
+          </p>
+
+          <button onclick="showFinal()">
+            Continue →
+          </button>
+
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- SCREEN 4: FINAL -->
+    <section id="final" class="screen">
+
+      <div class="card final-card">
+
+        <div class="emoji">🎉🎁❤️</div>
+
+        <h1>Congratulations!</h1>
+
+        <p class="love-points">
+          ❤️ ❤️ ❤️ ❤️ ❤️
+        </p>
+
+        <h2>You unlocked your birthday message!</h2>
+
+        <div class="letter">
+
+          <p>My Love,</p>
+
+          <p>
+            Happy Birthday! ❤️
+          </p>
+
+          <p>
+            I just want you to know how grateful I am to have you in my life.
+            Thank you for everything you do and for being such an amazing wife
+            and mother to our little family.
+          </p>
+
+          <p>
+            I may not always say it perfectly, but I love and appreciate you
+            more than words can explain.
+          </p>
+
+          <p>
+            Here's to more adventures, more memories, and more birthdays
+            together.
+          </p>
+
+          <h2>I love you ❤️</h2>
+
+          <p>
+            — Your Husband
+          </p>
+
+        </div>
+
+        <button onclick="celebrate()">
+          Celebrate! 🎉
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
