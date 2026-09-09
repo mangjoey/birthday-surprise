@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#120d17">
 
     <title>Our Adventure ❤️</title>
 
@@ -11,21 +12,14 @@
 
 <body>
 
-    <!-- Floating background effects -->
-    <div id="floating-hearts"></div>
+    <div id="floating-hearts" aria-hidden="true"></div>
+    <div id="confetti-container" aria-hidden="true"></div>
 
-    <!-- =========================
-         TOP HUD
-    ========================== -->
-
+    <!-- HUD -->
     <header class="hud">
-
-        <div class="logo">
-            ❤️ OUR STORY
-        </div>
+        <div class="logo">❤️ OUR STORY</div>
 
         <div class="hud-right">
-
             <div class="level-indicator">
                 LEVEL <span id="current-level">0</span>/5
             </div>
@@ -33,678 +27,771 @@
             <div class="score">
                 ❤️ <span id="score">0</span>
             </div>
-
         </div>
-
     </header>
 
+    <main>
 
-    <!-- =========================
-         START SCREEN
-    ========================== -->
+        <!-- =========================
+             START SCREEN
+        ========================== -->
+        <section id="start-screen" class="screen active">
 
-    <section id="start-screen" class="screen active">
+            <div class="hero-card">
 
-        <div class="hero-card">
+                <div class="hero-photo">
+                    <!-- photo5 = First Date -->
+                    <img src="images/photo5.jpg" alt="Our first date">
+                    <div class="photo-gradient"></div>
 
-            <div class="hero-photo">
-                <img src="images/photo1.jpg" alt="Our memory">
+                    <div class="photo-caption">
+                        Where our story began ❤️
+                    </div>
+                </div>
+
+                <div class="eyebrow">
+                    A LITTLE ADVENTURE MADE JUST FOR YOU
+                </div>
+
+                <h1>
+                    Happy Birthday,
+                    <span>My Love</span> ❤️
+                </h1>
+
+                <p class="hero-text">
+                    I could have bought you a gift...
+                    but I wanted to make something myself.
+                </p>
+
+                <p class="subtext">
+                    Complete five little challenges, collect Love Points,
+                    revisit our memories, and unlock your final surprise.
+                </p>
+
+                <button class="primary-btn" onclick="startGame()">
+                    START OUR ADVENTURE
+                    <span>→</span>
+                </button>
+
+                <div class="game-info">
+                    🎮 5 Levels
+                    <span>•</span>
+                    ❤️ Love Points
+                    <span>•</span>
+                    🎁 Final Surprise
+                </div>
+
             </div>
 
-            <div class="eyebrow">
-                A LITTLE ADVENTURE MADE JUST FOR YOU
-            </div>
-
-            <h1>
-                Happy Birthday,
-                <span>My Love</span> ❤️
-            </h1>
-
-            <p class="hero-text">
-                I could have bought you a gift...
-                but I wanted to make something myself.
-            </p>
-
-            <p class="subtext">
-                Complete the challenges, collect Love Points,
-                unlock our memories, and discover your final surprise.
-            </p>
-
-            <button class="primary-btn" onclick="startGame()">
-                START OUR ADVENTURE
-                <span>→</span>
-            </button>
-
-            <div class="game-info">
-                🎮 5 Levels &nbsp; • &nbsp;
-                ❤️ Love Points &nbsp; • &nbsp;
-                🎁 Final Surprise
-            </div>
-
-        </div>
-
-    </section>
+        </section>
 
 
-    <!-- =========================
-         MAP
-    ========================== -->
+        <!-- =========================
+             MAP
+        ========================== -->
+        <section id="map-screen" class="screen">
 
-    <section id="map-screen" class="screen">
+            <div class="section-container">
 
-        <div class="section-container">
+                <div class="eyebrow">YOUR JOURNEY</div>
 
-            <div class="eyebrow">
-                YOUR JOURNEY
-            </div>
+                <h2 class="section-title">
+                    The Adventure of Us
+                </h2>
 
-            <h2 class="section-title">
-                The Adventure of Us
-            </h2>
+                <p class="section-description">
+                    Every level unlocks another chapter of our story.
+                </p>
 
-            <p class="section-description">
-                Complete each chapter of our story.
-            </p>
+                <div class="level-map">
 
+                    <div class="level-card unlocked" id="level-card-1">
 
-            <div class="level-map">
+                        <div class="level-number">01</div>
 
-                <!-- LEVEL 1 -->
+                        <div class="level-icon">❤️</div>
 
-                <div class="level-card unlocked" id="level-card-1">
+                        <div class="level-info">
+                            <h3>Our Beginning</h3>
+                            <p>How well do you know our story?</p>
+                        </div>
 
-                    <div class="level-number">
-                        01
+                        <button class="level-button" onclick="openLevel(1)">
+                            PLAY
+                        </button>
+
                     </div>
 
-                    <div class="level-icon">
-                        ❓
+
+                    <div class="level-card locked" id="level-card-2">
+
+                        <div class="level-number">02</div>
+
+                        <div class="level-icon">🧩</div>
+
+                        <div class="level-info">
+                            <h3>Our Memories</h3>
+                            <p>Match five moments from our story.</p>
+                        </div>
+
+                        <span class="lock">🔒</span>
+
                     </div>
 
-                    <div class="level-info">
-                        <h3>How Well Do You Know Us?</h3>
-                        <p>Answer questions about our story.</p>
+
+                    <div class="level-card locked" id="level-card-3">
+
+                        <div class="level-number">03</div>
+
+                        <div class="level-icon">🇯🇵</div>
+
+                        <div class="level-info">
+                            <h3>Our Adventures</h3>
+                            <p>Find the hearts hidden in Japan.</p>
+                        </div>
+
+                        <span class="lock">🔒</span>
+
                     </div>
 
-                    <button onclick="openLevel(1)">
-                        PLAY
+
+                    <div class="level-card locked" id="level-card-4">
+
+                        <div class="level-number">04</div>
+
+                        <div class="level-icon">👨‍👩‍👦</div>
+
+                        <div class="level-info">
+                            <h3>Our Little Family</h3>
+                            <p>The best chapter we've created together.</p>
+                        </div>
+
+                        <span class="lock">🔒</span>
+
+                    </div>
+
+
+                    <div class="level-card locked" id="level-card-5">
+
+                        <div class="level-number">05</div>
+
+                        <div class="level-icon">💌</div>
+
+                        <div class="level-info">
+                            <h3>Forever</h3>
+                            <p>One last memory and a letter from me.</p>
+                        </div>
+
+                        <span class="lock">🔒</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             LEVEL 1 - QUIZ
+        ========================== -->
+        <section id="quiz-screen" class="screen">
+
+            <div class="game-card">
+
+                <button class="back-btn" onclick="showMap()">
+                    ← Journey
+                </button>
+
+                <div class="level-label">
+                    LEVEL 01 • OUR BEGINNING
+                </div>
+
+                <div class="story-photo small-story-photo">
+                    <!-- photo5 = First Date -->
+                    <img src="images/photo5.jpg" alt="Our first date">
+                    <span>Our First Date ❤️</span>
+                </div>
+
+                <div class="progress">
+                    <div id="quiz-progress"></div>
+                </div>
+
+                <div class="question-counter">
+                    Question
+                    <span id="question-number">1</span>
+                    of 5
+                </div>
+
+                <h2 id="question"></h2>
+
+                <div id="answers" class="answers"></div>
+
+                <div id="quiz-feedback" class="feedback"></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             LEVEL 2 - MEMORY
+        ========================== -->
+        <section id="memory-screen" class="screen">
+
+            <div class="game-card wide-card">
+
+                <button class="back-btn" onclick="showMap()">
+                    ← Journey
+                </button>
+
+                <div class="level-label">
+                    LEVEL 02 • OUR MEMORIES
+                </div>
+
+                <h2>Match Our Memories 🧩</h2>
+
+                <p class="game-description">
+                    Behind these cards are five memories from our story.
+                    Find all five matching pairs.
+                </p>
+
+                <div id="memory-grid" class="memory-grid"></div>
+
+                <div class="game-status">
+                    Matches:
+                    <strong>
+                        <span id="matches">0</span>/5
+                    </strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             LEVEL 3 - JAPAN HEART HUNT
+        ========================== -->
+        <section id="hearts-screen" class="screen">
+
+            <div class="game-card wide-card">
+
+                <button class="back-btn" onclick="showMap()">
+                    ← Journey
+                </button>
+
+                <div class="level-label">
+                    LEVEL 03 • OUR ADVENTURES
+                </div>
+
+                <h2>Japan Heart Hunt 🇯🇵❤️</h2>
+
+                <p class="game-description">
+                    One of my favorite adventures with you.
+                    Find all five hearts hiding in our memory.
+                </p>
+
+                <div id="heart-hunt">
+
+                    <!-- photo2 = Japan -->
+                    <img
+                        src="images/photo2.jpg"
+                        alt="Our Japan trip"
+                        id="hunt-photo"
+                    >
+
+                    <div class="photo-overlay"></div>
+
+                    <button
+                        class="hidden-heart heart-1"
+                        onclick="findHeart(this)"
+                        aria-label="Hidden heart 1">
+                        ❤️
+                    </button>
+
+                    <button
+                        class="hidden-heart heart-2"
+                        onclick="findHeart(this)"
+                        aria-label="Hidden heart 2">
+                        ❤️
+                    </button>
+
+                    <button
+                        class="hidden-heart heart-3"
+                        onclick="findHeart(this)"
+                        aria-label="Hidden heart 3">
+                        ❤️
+                    </button>
+
+                    <button
+                        class="hidden-heart heart-4"
+                        onclick="findHeart(this)"
+                        aria-label="Hidden heart 4">
+                        ❤️
+                    </button>
+
+                    <button
+                        class="hidden-heart heart-5"
+                        onclick="findHeart(this)"
+                        aria-label="Hidden heart 5">
+                        ❤️
                     </button>
 
                 </div>
 
-
-                <!-- LEVEL 2 -->
-
-                <div class="level-card locked" id="level-card-2">
-
-                    <div class="level-number">
-                        02
-                    </div>
-
-                    <div class="level-icon">
-                        🧩
-                    </div>
-
-                    <div class="level-info">
-                        <h3>Our Memories</h3>
-                        <p>Match our favorite moments.</p>
-                    </div>
-
-                    <span class="lock">
-                        🔒
-                    </span>
-
-                </div>
-
-
-                <!-- LEVEL 3 -->
-
-                <div class="level-card locked" id="level-card-3">
-
-                    <div class="level-number">
-                        03
-                    </div>
-
-                    <div class="level-icon">
-                        🔎
-                    </div>
-
-                    <div class="level-info">
-                        <h3>Find My Heart</h3>
-                        <p>Find the hidden hearts.</p>
-                    </div>
-
-                    <span class="lock">
-                        🔒
-                    </span>
-
-                </div>
-
-
-                <!-- LEVEL 4 -->
-
-                <div class="level-card locked" id="level-card-4">
-
-                    <div class="level-number">
-                        04
-                    </div>
-
-                    <div class="level-icon">
-                        👨‍👩‍👦
-                    </div>
-
-                    <div class="level-info">
-                        <h3>Our Little Family</h3>
-                        <p>Explore the people I love most.</p>
-                    </div>
-
-                    <span class="lock">
-                        🔒
-                    </span>
-
-                </div>
-
-
-                <!-- LEVEL 5 -->
-
-                <div class="level-card locked" id="level-card-5">
-
-                    <div class="level-number">
-                        05
-                    </div>
-
-                    <div class="level-icon">
-                        💌
-                    </div>
-
-                    <div class="level-info">
-                        <h3>A Letter From Me</h3>
-                        <p>Something I want you to know.</p>
-                    </div>
-
-                    <span class="lock">
-                        🔒
-                    </span>
-
+                <div class="game-status">
+                    Hearts found:
+                    <strong>
+                        <span id="hearts-found">0</span>/5
+                    </strong>
                 </div>
 
             </div>
 
-        </div>
-
-    </section>
+        </section>
 
 
-    <!-- =========================
-         LEVEL 1
-    ========================== -->
+        <!-- =========================
+             LEVEL 4 - FAMILY
+        ========================== -->
+        <section id="family-screen" class="screen">
 
-    <section id="quiz-screen" class="screen">
+            <div class="game-card wide-card">
 
-        <div class="game-card">
+                <button class="back-btn" onclick="showMap()">
+                    ← Journey
+                </button>
 
-            <div class="level-label">
-                LEVEL 01 • LOVE QUIZ
+                <div class="level-label">
+                    LEVEL 04 • OUR LITTLE FAMILY
+                </div>
+
+                <h2>The Three of Us ❤️</h2>
+
+                <p class="game-description">
+                    Our story became even more beautiful when we became three.
+                    Tap both memories to unlock their messages.
+                </p>
+
+                <div class="family-gallery">
+
+                    <button
+                        class="family-photo"
+                        id="family-photo-0"
+                        onclick="showFamilyMemory(0)"
+                    >
+
+                        <!-- photo3 = Wife + Jarren -->
+                        <img
+                            src="images/photo3.jpg"
+                            alt="You and Jarren"
+                        >
+
+                        <span>
+                            👩‍👦 YOU + JARREN
+                        </span>
+
+                        <div class="viewed-badge">✓</div>
+
+                    </button>
+
+
+                    <button
+                        class="family-photo"
+                        id="family-photo-1"
+                        onclick="showFamilyMemory(1)"
+                    >
+
+                        <!-- photo4 = Family -->
+                        <img
+                            src="images/photo4.jpg"
+                            alt="Our family"
+                        >
+
+                        <span>
+                            👨‍👩‍👦 OUR FAMILY
+                        </span>
+
+                        <div class="viewed-badge">✓</div>
+
+                    </button>
+
+                </div>
+
+                <div id="family-message" class="family-message">
+                    Choose a memory ❤️
+                </div>
+
+                <div class="family-progress">
+                    Memories opened:
+                    <strong>
+                        <span id="family-count">0</span>/2
+                    </strong>
+                </div>
+
+                <button
+                    id="family-continue"
+                    class="primary-btn hidden"
+                    onclick="completeFamily()"
+                >
+                    CONTINUE →
+                </button>
+
             </div>
 
-            <div class="progress">
-                <div id="quiz-progress"></div>
-            </div>
-
-            <div class="question-counter">
-                Question
-                <span id="question-number">1</span>
-                of 5
-            </div>
-
-            <h2 id="question"></h2>
-
-            <div id="answers" class="answers"></div>
-
-            <div id="quiz-feedback"></div>
-
-        </div>
-
-    </section>
+        </section>
 
 
-    <!-- =========================
-         LEVEL 2
-    ========================== -->
+        <!-- =========================
+             LEVEL 5 - LETTER
+        ========================== -->
+        <section id="letter-screen" class="screen">
 
-    <section id="memory-screen" class="screen">
+            <div class="game-card letter-card">
 
-        <div class="game-card">
+                <button class="back-btn" onclick="showMap()">
+                    ← Journey
+                </button>
 
-            <div class="level-label">
-                LEVEL 02 • OUR MEMORIES
-            </div>
+                <div class="level-label">
+                    LEVEL 05 • FOREVER
+                </div>
 
-            <h2>
-                Match Our Memories 🧩
-            </h2>
-
-            <p>
-                Find all 5 matching pairs.
-            </p>
-
-            <div id="memory-grid" class="memory-grid"></div>
-
-            <div class="game-status">
-                Matches:
-                <strong>
-                    <span id="matches">0</span>/5
-                </strong>
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         LEVEL 3
-    ========================== -->
-
-    <section id="hearts-screen" class="screen">
-
-        <div class="game-card">
-
-            <div class="level-label">
-                LEVEL 03 • FIND MY HEART
-            </div>
-
-            <h2>
-                Find the 5 Hidden Hearts ❤️
-            </h2>
-
-            <p>
-                Look carefully at this memory.
-            </p>
-
-            <div id="heart-hunt">
-
-                <img
-                    src="images/photo6.jpg"
-                    alt="Special memory"
-                    id="hunt-photo"
+                <div
+                    id="envelope"
+                    class="envelope"
+                    onclick="openLetter()"
+                    role="button"
+                    tabindex="0"
                 >
 
-                <div class="photo-overlay"></div>
+                    <div class="envelope-icon">💌</div>
 
-                <button
-                    class="hidden-heart heart-1"
-                    onclick="findHeart(this)">
-                    ❤️
-                </button>
+                    <h2>A Letter For You</h2>
 
-                <button
-                    class="hidden-heart heart-2"
-                    onclick="findHeart(this)">
-                    ❤️
-                </button>
+                    <p>
+                        One last chapter before your surprise.
+                    </p>
 
-                <button
-                    class="hidden-heart heart-3"
-                    onclick="findHeart(this)">
-                    ❤️
-                </button>
+                    <div class="tap-hint">
+                        TAP TO OPEN
+                    </div>
 
-                <button
-                    class="hidden-heart heart-4"
-                    onclick="findHeart(this)">
-                    ❤️
-                </button>
+                </div>
 
-                <button
-                    class="hidden-heart heart-5"
-                    onclick="findHeart(this)">
-                    ❤️
-                </button>
+
+                <div id="letter-content" class="letter-content hidden">
+
+                    <div class="letter-photo">
+
+                        <!-- photo1 = Wedding -->
+                        <img
+                            src="images/photo1.jpg"
+                            alt="Our wedding"
+                        >
+
+                        <span class="letter-photo-caption">
+                            I would still choose you. 💍
+                        </span>
+
+                    </div>
+
+
+                    <h2>My Love ❤️</h2>
+
+                    <p>
+                        Happy Birthday!
+                    </p>
+
+                    <p>
+                        I wanted to make something different for you this year.
+                        Something that came from me rather than simply buying
+                        something from a store.
+                    </p>
+
+                    <p>
+                        From our first date, to our adventures together,
+                        to becoming husband and wife, and then becoming
+                        a family — every chapter with you has given me
+                        something to be grateful for.
+                    </p>
+
+                    <p>
+                        Thank you for being my wife, my partner,
+                        and the person I get to share this life with.
+                    </p>
+
+                    <p>
+                        Thank you for everything you do for our family
+                        and for being such an amazing mother to Jarren.
+                    </p>
+
+                    <p>
+                        I may not always say everything perfectly,
+                        but I hope you always know how much I love
+                        and appreciate you.
+                    </p>
+
+                    <p>
+                        If I could go back to the very beginning
+                        and start our story again,
+                        I would still choose you.
+                    </p>
+
+                    <p class="emphasis">
+                        Again and again and again. ❤️
+                    </p>
+
+                    <p>
+                        Happy Birthday, my love.
+                    </p>
+
+                    <p class="signature">
+                        — Your Husband ❤️
+                    </p>
+
+                    <button
+                        class="primary-btn"
+                        onclick="showFinal()"
+                    >
+                        UNLOCK MY FINAL SURPRISE 🎁
+                    </button>
+
+                </div>
 
             </div>
 
-            <div class="game-status">
-                Hearts found:
-                <strong>
-                    <span id="hearts-found">0</span>/5
-                </strong>
+        </section>
+
+
+        <!-- =========================
+             FINAL
+        ========================== -->
+        <section id="final-screen" class="screen">
+
+            <div class="final-card">
+
+                <div class="confetti-title">
+                    🎉 ❤️ 🎉
+                </div>
+
+                <div class="eyebrow">
+                    ADVENTURE COMPLETE
+                </div>
+
+                <h1>
+                    Our Story So Far
+                </h1>
+
+                <p class="final-intro">
+                    Five photos. So many memories.
+                    And we're only getting started.
+                </p>
+
+                <div class="final-score">
+                    ❤️
+                    <span id="final-score">0</span>
+                    LOVE POINTS
+                </div>
+
+
+                <!-- ALL FIVE PHOTOS -->
+                <div class="story-timeline">
+
+                    <div class="timeline-memory">
+                        <div class="timeline-photo">
+                            <img
+                                src="images/photo5.jpg"
+                                alt="Our first date"
+                            >
+                        </div>
+
+                        <div class="timeline-content">
+                            <span>01</span>
+                            <h3>Our Beginning ❤️</h3>
+                            <p>One first date started everything.</p>
+                        </div>
+                    </div>
+
+
+                    <div class="timeline-memory reverse">
+                        <div class="timeline-photo">
+                            <img
+                                src="images/photo2.jpg"
+                                alt="Our Japan trip"
+                            >
+                        </div>
+
+                        <div class="timeline-content">
+                            <span>02</span>
+                            <h3>Our Adventures 🇯🇵</h3>
+                            <p>And suddenly the world became ours to explore.</p>
+                        </div>
+                    </div>
+
+
+                    <div class="timeline-memory">
+                        <div class="timeline-photo">
+                            <img
+                                src="images/photo1.jpg"
+                                alt="Our wedding"
+                            >
+                        </div>
+
+                        <div class="timeline-content">
+                            <span>03</span>
+                            <h3>We Said “I Do” 💍</h3>
+                            <p>I chose you then. I still choose you now.</p>
+                        </div>
+                    </div>
+
+
+                    <div class="timeline-memory reverse">
+                        <div class="timeline-photo">
+                            <img
+                                src="images/photo3.jpg"
+                                alt="You and Jarren"
+                            >
+                        </div>
+
+                        <div class="timeline-content">
+                            <span>04</span>
+                            <h3>Our Greatest Gift 👩‍👦</h3>
+                            <p>Then our love grew into something even bigger.</p>
+                        </div>
+                    </div>
+
+
+                    <div class="timeline-memory">
+                        <div class="timeline-photo">
+                            <img
+                                src="images/photo4.jpg"
+                                alt="Our family"
+                            >
+                        </div>
+
+                        <div class="timeline-content">
+                            <span>05</span>
+                            <h3>Our Little Family 👨‍👩‍👦</h3>
+                            <p>My favorite people. My favorite place to be.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="gift-section">
+
+                    <h2>
+                        But there is one more thing... ❤️
+                    </h2>
+
+                    <p>
+                        You unlocked your final surprise.
+                    </p>
+
+                    <button
+                        id="gift"
+                        class="gift"
+                        onclick="openGift()"
+                        aria-label="Open your birthday gift"
+                    >
+                        🎁
+                    </button>
+
+                    <p class="tap-gift">
+                        Tap the gift
+                    </p>
+
+
+                    <div
+                        id="gift-message"
+                        class="gift-message hidden"
+                    >
+
+                        <div class="gift-heart">
+                            ❤️
+                        </div>
+
+                        <h2>
+                            Happy Birthday, My Love! 🎂
+                        </h2>
+
+                        <p>
+                            Whatever happens today,
+                            I hope you know how loved you are.
+                        </p>
+
+                        <p>
+                            Here's to more adventures,
+                            more memories,
+                            more laughter,
+                            and many more birthdays together.
+                        </p>
+
+                        <div class="final-love">
+                            I LOVE YOU ❤️
+                        </div>
+
+                        <div class="final-family">
+                            You + Me + Jarren
+                            <br>
+                            <strong>Forever.</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
 
-        </div>
+        </section>
 
-    </section>
+    </main>
 
 
-    <!-- =========================
-         LEVEL 4
-    ========================== -->
+    <!-- LEVEL COMPLETE MODAL -->
+    <div id="level-complete-modal" class="modal hidden">
 
-    <section id="family-screen" class="screen">
+        <div class="modal-card">
 
-        <div class="game-card">
-
-            <div class="level-label">
-                LEVEL 04 • OUR LITTLE FAMILY
+            <div class="modal-icon">
+                ❤️
             </div>
 
-            <h2>
-                The Three of Us ❤️
+            <div class="eyebrow">
+                LEVEL COMPLETE
+            </div>
+
+            <h2 id="complete-title">
+                Beautiful!
             </h2>
 
-            <p>
-                Tap each memory to reveal a message.
+            <p id="complete-message">
+                Another chapter unlocked.
             </p>
 
-
-            <div class="family-gallery">
-
-                <button
-                    class="family-photo"
-                    onclick="showFamilyMemory(0)">
-
-                    <img src="images/photo2.jpg">
-
-                    <span>
-                        ❤️ US
-                    </span>
-
-                </button>
-
-
-                <button
-                    class="family-photo"
-                    onclick="showFamilyMemory(1)">
-
-                    <img src="images/photo3.jpg">
-
-                    <span>
-                        💕 YOU
-                    </span>
-
-                </button>
-
-
-                <button
-                    class="family-photo"
-                    onclick="showFamilyMemory(2)">
-
-                    <img src="images/photo4.jpg">
-
-                    <span>
-                        👨‍👩‍👦 FAMILY
-                    </span>
-
-                </button>
-
-
-                <button
-                    class="family-photo"
-                    onclick="showFamilyMemory(3)">
-
-                    <img src="images/photo5.jpg">
-
-                    <span>
-                        ✨ MEMORY
-                    </span>
-
-                </button>
-
+            <div class="points-earned">
+                +<span id="points-earned">0</span>
+                LOVE POINTS
             </div>
-
-
-            <div
-                id="family-message"
-                class="family-message">
-
-                Choose a memory ❤️
-
-            </div>
-
 
             <button
-                id="family-continue"
-                class="primary-btn hidden"
-                onclick="completeFamily()">
-
-                CONTINUE →
+                class="primary-btn"
+                onclick="continueJourney()"
+            >
+                CONTINUE OUR STORY →
             </button>
 
         </div>
 
-    </section>
+    </div>
 
 
-    <!-- =========================
-         LEVEL 5
-    ========================== -->
-
-    <section id="letter-screen" class="screen">
-
-        <div class="game-card letter-card">
-
-            <div class="level-label">
-                LEVEL 05 • FROM MY HEART
-            </div>
-
-
-            <div
-                id="envelope"
-                class="envelope"
-                onclick="openLetter()">
-
-                <div class="envelope-icon">
-                    💌
-                </div>
-
-                <h2>
-                    A Letter For You
-                </h2>
-
-                <p>
-                    I wrote something just for you.
-                </p>
-
-                <div class="tap-hint">
-                    TAP TO OPEN
-                </div>
-
-            </div>
-
-
-            <div
-                id="letter-content"
-                class="letter-content hidden">
-
-                <div class="letter-photo">
-
-                    <img
-                        src="images/photo7.jpg"
-                        alt="Our memory">
-
-                </div>
-
-
-                <h2>
-                    My Love ❤️
-                </h2>
-
-
-                <p>
-                    Happy Birthday!
-                </p>
-
-
-                <p>
-                    I wanted to make something different for you
-                    this year. Something that came from me,
-                    rather than simply buying something from a store.
-                </p>
-
-
-                <p>
-                    Every photo in this little adventure represents
-                    a moment that I'm grateful to have shared with you.
-                </p>
-
-
-                <p>
-                    Thank you for being my wife, my partner,
-                    and the person I get to share this life with.
-                </p>
-
-
-                <p>
-                    Thank you for everything you do for our family
-                    and for being such an amazing mother to our little boy.
-                </p>
-
-
-                <p>
-                    I may not always say everything perfectly,
-                    but I hope you always know how much I love
-                    and appreciate you.
-                </p>
-
-
-                <p>
-                    If I could go back and start our story again,
-                    I would still choose you.
-                </p>
-
-
-                <p class="emphasis">
-                    Again and again and again. ❤️
-                </p>
-
-
-                <p>
-                    Happy Birthday, my love.
-                </p>
-
-
-                <p class="signature">
-                    — Your Husband ❤️
-                </p>
-
-
-                <button
-                    class="primary-btn"
-                    onclick="showFinal()">
-
-                    UNLOCK MY FINAL SURPRISE 🎁
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         FINAL
-    ========================== -->
-
-    <section id="final-screen" class="screen">
-
-        <div class="final-card">
-
-            <div class="confetti-title">
-                🎉 ❤️ 🎉
-            </div>
-
-            <div class="eyebrow">
-                ADVENTURE COMPLETE
-            </div>
-
-            <h1>
-                YOU DID IT!
-            </h1>
-
-
-            <div class="final-score">
-
-                ❤️
-                <span id="final-score">0</span>
-                LOVE POINTS
-
-            </div>
-
-
-            <div class="final-photo">
-
-                <img
-                    src="images/photo8.jpg"
-                    alt="Us">
-
-            </div>
-
-
-            <h2>
-                You unlocked your final surprise. ❤️
-            </h2>
-
-
-            <div
-                id="gift"
-                class="gift"
-                onclick="openGift()">
-
-                🎁
-
-            </div>
-
-
-            <p>
-                Tap the gift.
-            </p>
-
-
-            <div
-                id="gift-message"
-                class="gift-message hidden">
-
-                <h2>
-                    Happy Birthday, My Love! 🎂❤️
-                </h2>
-
-                <p>
-                    Whatever happens today,
-                    I hope you know how loved you are.
-                </p>
-
-                <p>
-                    Here's to more adventures,
-                    more memories,
-                    more laughter,
-                    and more years together.
-                </p>
-
-                <div class="final-love">
-                    I LOVE YOU ❤️
-                </div>
-
-                <div class="final-family">
-                    You + Me + Our Little One
-                    <br>
-                    <strong>Forever.</strong>
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         TOAST
-    ========================== -->
-
+    <!-- TOAST -->
     <div id="toast"></div>
-
 
     <script src="script.js"></script>
 
