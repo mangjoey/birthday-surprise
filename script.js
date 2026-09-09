@@ -1,32 +1,30 @@
-/* ==========================================
-   BIRTHDAY ADVENTURE
-   Uses ONLY:
+/* =========================================================
+   OUR ADVENTURE ❤️
+   COMPLETE SCRIPT.JS
+
+   PHOTO MAPPING
    photo1.jpg = Wedding
-   photo2.jpg = Japan
+   photo2.jpg = Japan Trip
    photo3.jpg = Wife + Jarren
    photo4.jpg = Family
    photo5.jpg = First Date
-========================================== */
+========================================================= */
 
 
-/* ==========================================
+/* =========================================================
    GAME STATE
-========================================== */
+========================================================= */
 
 let score = 0;
-
-let highestUnlockedLevel = 1;
-
 let currentLevel = 0;
-
-let pendingNextLevel = null;
+let highestUnlockedLevel = 1;
 
 const completedLevels = new Set();
 
 
-/* ==========================================
-   SCREENS
-========================================== */
+/* =========================================================
+   SCREEN MANAGEMENT
+========================================================= */
 
 const screenIds = [
     "start-screen",
@@ -40,70 +38,87 @@ const screenIds = [
 ];
 
 
-function showScreen(id) {
+function showScreen(screenId) {
 
-    screenIds.forEach(screenId => {
-
-        const screen =
-            document.getElementById(screenId);
-
-        if (screen) {
-            screen.classList.remove("active");
-        }
-
+    document.querySelectorAll(".screen").forEach(screen => {
+        screen.classList.remove("active");
     });
 
+    const target = document.getElementById(screenId);
 
-    const target =
-        document.getElementById(id);
-
-    if (target) {
-
-        target.classList.add("active");
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-
+    if (!target) {
+        console.error(`Screen not found: ${screenId}`);
+        return;
     }
 
+    target.classList.add("active");
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 }
 
 
-/* ==========================================
-   START
-========================================== */
+/* =========================================================
+   START GAME
+========================================================= */
 
 function startGame() {
 
     currentLevel = 0;
 
     updateHUD();
+    refreshMap();
+    showScreen("map-screen");
 
-    showMap();
-
-    showToast(
-        "Your adventure begins ❤️"
-    );
-
+    showToast("Your adventure begins ❤️");
 }
 
 
-/* ==========================================
+/* =========================================================
+   HUD
+========================================================= */
+
+function updateHUD() {
+
+    const levelElement =
+        document.getElementById("current-level");
+
+    const scoreElement =
+        document.getElementById("score");
+
+
+    if (levelElement) {
+        levelElement.textContent = currentLevel;
+    }
+
+    if (scoreElement) {
+        scoreElement.textContent = score;
+    }
+}
+
+
+function addScore(points) {
+
+    score += points;
+
+    updateHUD();
+}
+
+
+/* =========================================================
    MAP
-========================================== */
+========================================================= */
 
 function showMap() {
 
     currentLevel = 0;
 
     updateHUD();
-
     refreshMap();
 
     showScreen("map-screen");
-
 }
 
 
@@ -112,16 +127,20 @@ function refreshMap() {
     for (let level = 1; level <= 5; level++) {
 
         const card =
-            document.getElementById(
-                `level-card-${level}`
-            );
+            document.getElementById(`level-card-${level}`);
 
-        if (!card) continue;
+        if (!card) {
+            continue;
+        }
 
 
         const unlocked =
             level <= highestUnlockedLevel;
 
+
+        /* -----------------------------
+           CARD STATE
+        ----------------------------- */
 
         card.classList.toggle(
             "unlocked",
@@ -139,90 +158,76 @@ function refreshMap() {
         );
 
 
-        const oldButton =
-            card.querySelector(
-                ".level-button"
-            );
+        /* -----------------------------
+           REMOVE OLD CONTROLS
+        ----------------------------- */
 
-        const oldLock =
-            card.querySelector(
-                ".lock"
-            );
+        const existingButton =
+            card.querySelector(".level-button");
 
+        const existingLock =
+            card.querySelector(".lock");
+
+
+        if (existingButton) {
+            existingButton.remove();
+        }
+
+        if (existingLock) {
+            existingLock.remove();
+        }
+
+
+        /* -----------------------------
+           UNLOCKED LEVEL
+        ----------------------------- */
 
         if (unlocked) {
 
-            if (oldLock) {
-                oldLock.remove();
-            }
+            const button =
+                document.createElement("button");
 
+            button.type = "button";
 
-            if (!oldButton) {
+            button.className =
+                "level-button";
 
-                const button =
-                    document.createElement(
-                        "button"
-                    );
+            button.textContent =
+                completedLevels.has(level)
+                    ? "REPLAY"
+                    : "PLAY";
 
-                button.className =
-                    "level-button";
+            button.addEventListener(
+                "click",
+                () => openLevel(level)
+            );
 
-                button.textContent =
-                    completedLevels.has(level)
-                        ? "REPLAY"
-                        : "PLAY";
-
-                button.onclick =
-                    () => openLevel(level);
-
-                card.appendChild(button);
-
-            } else {
-
-                oldButton.textContent =
-                    completedLevels.has(level)
-                        ? "REPLAY"
-                        : "PLAY";
-
-                oldButton.onclick =
-                    () => openLevel(level);
-
-            }
-
-        } else {
-
-            if (oldButton) {
-                oldButton.remove();
-            }
-
-
-            if (!oldLock) {
-
-                const lock =
-                    document.createElement(
-                        "span"
-                    );
-
-                lock.className =
-                    "lock";
-
-                lock.textContent =
-                    "🔒";
-
-                card.appendChild(lock);
-
-            }
+            card.appendChild(button);
 
         }
 
-    }
+        /* -----------------------------
+           LOCKED LEVEL
+        ----------------------------- */
 
+        else {
+
+            const lock =
+                document.createElement("span");
+
+            lock.className = "lock";
+
+            lock.textContent = "🔒";
+
+            card.appendChild(lock);
+        }
+    }
 }
 
 
-/* ==========================================
+/* =========================================================
    OPEN LEVEL
-========================================== */
+========================================================= */
 
 function openLevel(level) {
 
@@ -233,7 +238,6 @@ function openLevel(level) {
         );
 
         return;
-
     }
 
 
@@ -288,34 +292,143 @@ function openLevel(level) {
 
             break;
 
+
+        default:
+
+            console.error(
+                `Unknown level: ${level}`
+            );
+    }
+}
+
+
+/* =========================================================
+   LEVEL COMPLETION
+========================================================= */
+
+function completeLevel(
+    level,
+    bonusPoints,
+    title,
+    message
+) {
+
+    const firstCompletion =
+        !completedLevels.has(level);
+
+
+    /* Only award bonus once */
+
+    if (firstCompletion) {
+
+        completedLevels.add(level);
+
+        addScore(bonusPoints);
     }
 
+
+    /* Unlock next level */
+
+    if (level < 5) {
+
+        highestUnlockedLevel =
+            Math.max(
+                highestUnlockedLevel,
+                level + 1
+            );
+    }
+
+
+    /* Update modal */
+
+    const titleElement =
+        document.getElementById(
+            "complete-title"
+        );
+
+    const messageElement =
+        document.getElementById(
+            "complete-message"
+        );
+
+    const pointsElement =
+        document.getElementById(
+            "points-earned"
+        );
+
+
+    if (titleElement) {
+        titleElement.textContent = title;
+    }
+
+    if (messageElement) {
+        messageElement.textContent = message;
+    }
+
+    if (pointsElement) {
+
+        pointsElement.textContent =
+            firstCompletion
+                ? bonusPoints
+                : 0;
+    }
+
+
+    /* Refresh map immediately */
+
+    refreshMap();
+
+
+    /* Show completion modal */
+
+    const modal =
+        document.getElementById(
+            "level-complete-modal"
+        );
+
+
+    if (modal) {
+
+        modal.classList.remove(
+            "hidden"
+        );
+
+    } else {
+
+        /* Fallback */
+
+        showMap();
+    }
+
+
+    launchConfetti(35);
 }
 
 
-/* ==========================================
-   HUD
-========================================== */
+function continueJourney() {
 
-function updateHUD() {
-
-    document.getElementById(
-        "current-level"
-    ).textContent =
-        currentLevel;
+    const modal =
+        document.getElementById(
+            "level-complete-modal"
+        );
 
 
-    document.getElementById(
-        "score"
-    ).textContent =
-        score;
+    if (modal) {
 
+        modal.classList.add(
+            "hidden"
+        );
+    }
+
+
+    showMap();
 }
 
 
-/* ==========================================
-   QUIZ
-========================================== */
+/* =========================================================
+   LEVEL 1
+   LOVE QUIZ
+========================================================= */
 
 const quizQuestions = [
 
@@ -335,6 +448,7 @@ const quizQuestions = [
             "Exactly. One date changed everything. ❤️"
     },
 
+
     {
         question:
             "What is my favorite thing about you?",
@@ -350,6 +464,7 @@ const quizQuestions = [
         message:
             "Correct. There was never just one thing. ❤️"
     },
+
 
     {
         question:
@@ -367,6 +482,7 @@ const quizQuestions = [
             "Our greatest little adventure. 👨‍👩‍👦"
     },
 
+
     {
         question:
             "If I could start our story again, what would I do?",
@@ -382,6 +498,7 @@ const quizQuestions = [
         message:
             "Again and again and again. ❤️"
     },
+
 
     {
         question:
@@ -404,60 +521,103 @@ const quizQuestions = [
 
 
 let quizIndex = 0;
-
 let quizLocked = false;
 
 
 function resetQuiz() {
 
     quizIndex = 0;
-
     quizLocked = false;
 
     renderQuestion();
-
 }
 
 
 function renderQuestion() {
 
+    if (
+        quizIndex >=
+        quizQuestions.length
+    ) {
+
+        finishLevelOne();
+
+        return;
+    }
+
+
     const question =
         quizQuestions[quizIndex];
 
 
-    document.getElementById(
-        "question-number"
-    ).textContent =
-        quizIndex + 1;
+    const questionNumber =
+        document.getElementById(
+            "question-number"
+        );
 
+    const questionText =
+        document.getElementById(
+            "question"
+        );
 
-    document.getElementById(
-        "question"
-    ).textContent =
-        question.question;
-
-
-    document.getElementById(
-        "quiz-progress"
-    ).style.width =
-        `${
-            ((quizIndex + 1) /
-            quizQuestions.length) * 100
-        }%`;
-
+    const progress =
+        document.getElementById(
+            "quiz-progress"
+        );
 
     const answers =
         document.getElementById(
             "answers"
         );
 
+    const feedback =
+        document.getElementById(
+            "quiz-feedback"
+        );
+
+
+    if (questionNumber) {
+
+        questionNumber.textContent =
+            quizIndex + 1;
+    }
+
+
+    if (questionText) {
+
+        questionText.textContent =
+            question.question;
+    }
+
+
+    if (progress) {
+
+        progress.style.width =
+            `${
+                (
+                    (quizIndex + 1) /
+                    quizQuestions.length
+                ) * 100
+            }%`;
+    }
+
+
+    if (!answers) {
+
+        console.error(
+            "Quiz answers container not found."
+        );
+
+        return;
+    }
+
 
     answers.innerHTML = "";
 
 
-    document.getElementById(
-        "quiz-feedback"
-    ).textContent = "";
+    if (feedback) {
+        feedback.textContent = "";
+    }
 
 
     question.answers.forEach(
@@ -469,16 +629,23 @@ function renderQuestion() {
                 );
 
 
+            button.type = "button";
+
             button.textContent =
                 answer;
 
 
-            button.onclick =
-                () =>
+            button.addEventListener(
+                "click",
+                () => {
+
                     selectQuizAnswer(
                         index,
                         button
                     );
+
+                }
+            );
 
 
             answers.appendChild(
@@ -487,7 +654,6 @@ function renderQuestion() {
 
         }
     );
-
 }
 
 
@@ -496,7 +662,10 @@ function selectQuizAnswer(
     selectedButton
 ) {
 
-    if (quizLocked) return;
+    if (quizLocked) {
+        return;
+    }
+
 
     quizLocked = true;
 
@@ -510,6 +679,14 @@ function selectQuizAnswer(
             "#answers button"
         );
 
+
+    const feedback =
+        document.getElementById(
+            "quiz-feedback"
+        );
+
+
+    /* Disable buttons */
 
     buttons.forEach(
         (button, index) => {
@@ -525,12 +702,13 @@ function selectQuizAnswer(
                 button.classList.add(
                     "correct"
                 );
-
             }
 
         }
     );
 
+
+    /* Correct */
 
     if (
         answerIndex ===
@@ -543,62 +721,94 @@ function selectQuizAnswer(
 
         addScore(10);
 
-        document.getElementById(
-            "quiz-feedback"
-        ).textContent =
-            question.message;
 
-    } else {
+        if (feedback) {
+
+            feedback.textContent =
+                question.message;
+        }
+
+    }
+
+    /* Wrong */
+
+    else {
 
         selectedButton.classList.add(
             "wrong"
         );
 
-        document.getElementById(
-            "quiz-feedback"
-        ).textContent =
-            "Almost! But I still love you. 😘";
+
+        if (feedback) {
+
+            feedback.textContent =
+                "Almost! But I still love you. 😘";
+        }
 
     }
 
 
+    /* Move forward */
+
     setTimeout(() => {
+
+        const lastQuestion =
+            quizIndex ===
+            quizQuestions.length - 1;
+
+
+        if (lastQuestion) {
+
+            finishLevelOne();
+
+            return;
+        }
+
 
         quizIndex++;
 
         quizLocked = false;
 
+        renderQuestion();
 
-        if (
-            quizIndex <
-            quizQuestions.length
-        ) {
-
-            renderQuestion();
-
-        } else {
-
-            completeLevel(
-                1,
-                25,
-                "Our Beginning ❤️",
-                "You unlocked the memories that came next."
-            );
-
-        }
-
-    }, 1300);
-
+    }, 900);
 }
 
 
-/* ==========================================
+/* =========================================================
+   FIXED LEVEL 1 COMPLETION
+========================================================= */
+
+function finishLevelOne() {
+
+    /*
+       IMPORTANT:
+       Unlock Level 2 BEFORE showing
+       the completion modal.
+    */
+
+    highestUnlockedLevel =
+        Math.max(
+            highestUnlockedLevel,
+            2
+        );
+
+
+    completeLevel(
+        1,
+        25,
+        "Our Beginning ❤️",
+        "You unlocked the next chapter of our story."
+    );
+}
+
+
+/* =========================================================
+   LEVEL 2
    MEMORY GAME
 
-   IMPORTANT:
-   Five actual photos are duplicated here
-   to create five matching pairs.
-========================================== */
+   Uses the five real photos twice.
+========================================================= */
 
 const memoryPhotos = [
 
@@ -631,9 +841,7 @@ const memoryPhotos = [
 
 
 let flippedCards = [];
-
 let memoryLocked = false;
-
 let matches = 0;
 
 
@@ -646,10 +854,22 @@ function resetMemoryGame() {
     matches = 0;
 
 
-    document.getElementById(
-        "matches"
-    ).textContent = 0;
+    const matchesElement =
+        document.getElementById(
+            "matches"
+        );
 
+
+    if (matchesElement) {
+        matchesElement.textContent = 0;
+    }
+
+
+    /*
+       Duplicate all five photos.
+
+       5 photos × 2 = 10 cards.
+    */
 
     const deck = [
 
@@ -677,6 +897,16 @@ function resetMemoryGame() {
         );
 
 
+    if (!grid) {
+
+        console.error(
+            "Memory grid not found."
+        );
+
+        return;
+    }
+
+
     grid.innerHTML = "";
 
 
@@ -687,6 +917,8 @@ function resetMemoryGame() {
                 "button"
             );
 
+
+        card.type = "button";
 
         card.className =
             "memory-card";
@@ -709,10 +941,12 @@ function resetMemoryGame() {
                 </div>
 
                 <div class="memory-back">
+
                     <img
                         src="${photo.src}"
                         alt="Our memory"
                     >
+
                 </div>
 
             </div>
@@ -720,14 +954,15 @@ function resetMemoryGame() {
         `;
 
 
-        card.onclick =
-            () => flipMemoryCard(card);
+        card.addEventListener(
+            "click",
+            () => flipMemoryCard(card)
+        );
 
 
         grid.appendChild(card);
 
     });
-
 }
 
 
@@ -742,6 +977,7 @@ function flipMemoryCard(card) {
             "matched"
         )
     ) {
+
         return;
     }
 
@@ -759,19 +995,25 @@ function flipMemoryCard(card) {
     ) {
 
         checkMemoryMatch();
-
     }
-
 }
 
 
 function checkMemoryMatch() {
 
-    const [
-        first,
-        second
-    ] = flippedCards;
+    const first =
+        flippedCards[0];
 
+    const second =
+        flippedCards[1];
+
+
+    if (!first || !second) {
+        return;
+    }
+
+
+    /* MATCH */
 
     if (
         first.dataset.id ===
@@ -790,10 +1032,17 @@ function checkMemoryMatch() {
         matches++;
 
 
-        document.getElementById(
-            "matches"
-        ).textContent =
-            matches;
+        const matchesElement =
+            document.getElementById(
+                "matches"
+            );
+
+
+        if (matchesElement) {
+
+            matchesElement.textContent =
+                matches;
+        }
 
 
         addScore(10);
@@ -819,10 +1068,13 @@ function checkMemoryMatch() {
                 );
 
             }, 700);
-
         }
 
-    } else {
+    }
+
+    /* NO MATCH */
+
+    else {
 
         memoryLocked = true;
 
@@ -843,15 +1095,14 @@ function checkMemoryMatch() {
             memoryLocked = false;
 
         }, 900);
-
     }
-
 }
 
 
-/* ==========================================
-   HEART HUNT
-========================================== */
+/* =========================================================
+   LEVEL 3
+   JAPAN HEART HUNT
+========================================================= */
 
 let heartsFound = 0;
 
@@ -861,9 +1112,15 @@ function resetHeartHunt() {
     heartsFound = 0;
 
 
-    document.getElementById(
-        "hearts-found"
-    ).textContent = 0;
+    const counter =
+        document.getElementById(
+            "hearts-found"
+        );
+
+
+    if (counter) {
+        counter.textContent = 0;
+    }
 
 
     document.querySelectorAll(
@@ -877,7 +1134,6 @@ function resetHeartHunt() {
         heart.disabled = false;
 
     });
-
 }
 
 
@@ -888,6 +1144,7 @@ function findHeart(heart) {
             "found"
         )
     ) {
+
         return;
     }
 
@@ -902,10 +1159,17 @@ function findHeart(heart) {
     heartsFound++;
 
 
-    document.getElementById(
-        "hearts-found"
-    ).textContent =
-        heartsFound;
+    const counter =
+        document.getElementById(
+            "hearts-found"
+        );
+
+
+    if (counter) {
+
+        counter.textContent =
+            heartsFound;
+    }
 
 
     addScore(10);
@@ -928,15 +1192,14 @@ function findHeart(heart) {
             );
 
         }, 650);
-
     }
-
 }
 
 
-/* ==========================================
+/* =========================================================
+   LEVEL 4
    FAMILY
-========================================== */
+========================================================= */
 
 const familyMessages = [
 
@@ -957,22 +1220,42 @@ function resetFamily() {
         new Set();
 
 
-    document.getElementById(
-        "family-count"
-    ).textContent = 0;
+    const counter =
+        document.getElementById(
+            "family-count"
+        );
 
 
-    document.getElementById(
-        "family-message"
-    ).textContent =
-        "Choose a memory ❤️";
+    if (counter) {
+        counter.textContent = 0;
+    }
 
 
-    document.getElementById(
-        "family-continue"
-    ).classList.add(
-        "hidden"
-    );
+    const message =
+        document.getElementById(
+            "family-message"
+        );
+
+
+    if (message) {
+
+        message.textContent =
+            "Choose a memory ❤️";
+    }
+
+
+    const continueButton =
+        document.getElementById(
+            "family-continue"
+        );
+
+
+    if (continueButton) {
+
+        continueButton.classList.add(
+            "hidden"
+        );
+    }
 
 
     document.querySelectorAll(
@@ -984,16 +1267,22 @@ function resetFamily() {
         );
 
     });
-
 }
 
 
 function showFamilyMemory(index) {
 
-    document.getElementById(
-        "family-message"
-    ).textContent =
-        familyMessages[index];
+    const message =
+        document.getElementById(
+            "family-message"
+        );
+
+
+    if (message) {
+
+        message.textContent =
+            familyMessages[index];
+    }
 
 
     if (
@@ -1007,37 +1296,54 @@ function showFamilyMemory(index) {
         );
 
 
-        document.getElementById(
-            `family-photo-${index}`
-        ).classList.add(
-            "viewed"
-        );
+        const photo =
+            document.getElementById(
+                `family-photo-${index}`
+            );
 
 
-        document.getElementById(
-            "family-count"
-        ).textContent =
-            viewedFamilyMemories.size;
+        if (photo) {
+
+            photo.classList.add(
+                "viewed"
+            );
+        }
+
+
+        const counter =
+            document.getElementById(
+                "family-count"
+            );
+
+
+        if (counter) {
+
+            counter.textContent =
+                viewedFamilyMemories.size;
+        }
 
 
         addScore(10);
-
     }
 
 
     if (
-        viewedFamilyMemories.size ===
-        2
+        viewedFamilyMemories.size === 2
     ) {
 
-        document.getElementById(
-            "family-continue"
-        ).classList.remove(
-            "hidden"
-        );
+        const continueButton =
+            document.getElementById(
+                "family-continue"
+            );
 
+
+        if (continueButton) {
+
+            continueButton.classList.remove(
+                "hidden"
+            );
+        }
     }
-
 }
 
 
@@ -1049,13 +1355,13 @@ function completeFamily() {
         "Our Little Family 👨‍👩‍👦",
         "You unlocked the final chapter of our adventure."
     );
-
 }
 
 
-/* ==========================================
+/* =========================================================
+   LEVEL 5
    LETTER
-========================================== */
+========================================================= */
 
 let letterOpened = false;
 
@@ -1065,45 +1371,84 @@ function resetLetter() {
     letterOpened = false;
 
 
-    document.getElementById(
-        "envelope"
-    ).classList.remove(
-        "hidden"
-    );
+    const envelope =
+        document.getElementById(
+            "envelope"
+        );
 
 
-    document.getElementById(
-        "letter-content"
-    ).classList.add(
-        "hidden"
-    );
+    const letter =
+        document.getElementById(
+            "letter-content"
+        );
 
+
+    if (envelope) {
+
+        envelope.classList.remove(
+            "hidden"
+        );
+    }
+
+
+    if (letter) {
+
+        letter.classList.add(
+            "hidden"
+        );
+    }
 }
 
 
 function openLetter() {
 
-    if (letterOpened) return;
+    if (letterOpened) {
+        return;
+    }
 
 
     letterOpened = true;
 
 
-    document.getElementById(
-        "envelope"
-    ).classList.add(
-        "hidden"
-    );
+    const envelope =
+        document.getElementById(
+            "envelope"
+        );
 
 
-    document.getElementById(
-        "letter-content"
-    ).classList.remove(
-        "hidden"
-    );
+    const letter =
+        document.getElementById(
+            "letter-content"
+        );
 
 
-    addScore(25);
+    if (envelope) {
+
+        envelope.classList.add(
+            "hidden"
+        );
+    }
+
+
+    if (letter) {
+
+        letter.classList.remove(
+            "hidden"
+        );
+    }
+
+
+    /*
+       Award letter points only if
+       Level 5 hasn't been completed.
+    */
+
+    if (
+        !completedLevels.has(5)
+    ) {
+
+        addScore(25);
+    }
 
 
     createHeartBurst();
@@ -1112,15 +1457,18 @@ function openLetter() {
     showToast(
         "One last message from me ❤️"
     );
-
 }
 
 
-/* ==========================================
+/* =========================================================
    FINAL
-========================================== */
+========================================================= */
 
 function showFinal() {
+
+    /*
+       Complete Level 5 only once.
+    */
 
     if (
         !completedLevels.has(5)
@@ -1129,21 +1477,28 @@ function showFinal() {
         completedLevels.add(5);
 
         addScore(50);
-
     }
 
 
+    currentLevel = 5;
+
     highestUnlockedLevel = 5;
 
-    currentLevel = 5;
 
     updateHUD();
 
 
-    document.getElementById(
-        "final-score"
-    ).textContent =
-        score;
+    const finalScore =
+        document.getElementById(
+            "final-score"
+        );
+
+
+    if (finalScore) {
+
+        finalScore.textContent =
+            score;
+    }
 
 
     showScreen(
@@ -1151,21 +1506,23 @@ function showFinal() {
     );
 
 
-    launchConfetti(80);
-
+    launchConfetti(90);
 }
 
 
-/* ==========================================
-   GIFT
-========================================== */
+/* =========================================================
+   FINAL GIFT
+========================================================= */
 
 let giftOpened = false;
 
 
 function openGift() {
 
-    if (giftOpened) return;
+    if (giftOpened) {
+        return;
+    }
+
 
     giftOpened = true;
 
@@ -1176,28 +1533,48 @@ function openGift() {
         );
 
 
-    gift.classList.add(
-        "opened"
-    );
+    const giftMessage =
+        document.getElementById(
+            "gift-message"
+        );
+
+
+    const tapGift =
+        document.querySelector(
+            ".tap-gift"
+        );
+
+
+    if (gift) {
+
+        gift.classList.add(
+            "opened"
+        );
+    }
 
 
     setTimeout(() => {
 
-        gift.style.display =
-            "none";
+        if (gift) {
+
+            gift.style.display =
+                "none";
+        }
 
 
-        document.querySelector(
-            ".tap-gift"
-        ).style.display =
-            "none";
+        if (tapGift) {
+
+            tapGift.style.display =
+                "none";
+        }
 
 
-        document.getElementById(
-            "gift-message"
-        ).classList.remove(
-            "hidden"
-        );
+        if (giftMessage) {
+
+            giftMessage.classList.remove(
+                "hidden"
+            );
+        }
 
 
         launchConfetti(150);
@@ -1205,125 +1582,27 @@ function openGift() {
         createHeartBurst();
 
 
-        setTimeout(() => {
+        if (giftMessage) {
 
-            document.getElementById(
-                "gift-message"
-            ).scrollIntoView({
-                behavior: "smooth",
-                block: "center"
-            });
+            setTimeout(() => {
 
-        }, 200);
+                giftMessage.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+
+            }, 200);
+        }
 
     }, 450);
-
 }
 
 
-/* ==========================================
-   COMPLETE LEVEL
-========================================== */
-
-function completeLevel(
-    level,
-    bonusPoints,
-    title,
-    message
-) {
-
-    const firstCompletion =
-        !completedLevels.has(level);
-
-
-    if (firstCompletion) {
-
-        completedLevels.add(level);
-
-        addScore(bonusPoints);
-
-    }
-
-
-    if (level < 5) {
-
-        highestUnlockedLevel =
-            Math.max(
-                highestUnlockedLevel,
-                level + 1
-            );
-
-
-        pendingNextLevel =
-            level + 1;
-
-    }
-
-
-    document.getElementById(
-        "complete-title"
-    ).textContent =
-        title;
-
-
-    document.getElementById(
-        "complete-message"
-    ).textContent =
-        message;
-
-
-    document.getElementById(
-        "points-earned"
-    ).textContent =
-        firstCompletion
-            ? bonusPoints
-            : 0;
-
-
-    document.getElementById(
-        "level-complete-modal"
-    ).classList.remove(
-        "hidden"
-    );
-
-
-    launchConfetti(35);
-
-}
-
-
-function continueJourney() {
-
-    document.getElementById(
-        "level-complete-modal"
-    ).classList.add(
-        "hidden"
-    );
-
-
-    showMap();
-
-}
-
-
-/* ==========================================
-   SCORE
-========================================== */
-
-function addScore(points) {
-
-    score += points;
-
-    updateHUD();
-
-}
-
-
-/* ==========================================
+/* =========================================================
    TOAST
-========================================== */
+========================================================= */
 
-let toastTimer;
+let toastTimer = null;
 
 
 function showToast(message) {
@@ -1332,6 +1611,11 @@ function showToast(message) {
         document.getElementById(
             "toast"
         );
+
+
+    if (!toast) {
+        return;
+    }
 
 
     toast.textContent =
@@ -1343,9 +1627,12 @@ function showToast(message) {
     );
 
 
-    clearTimeout(
-        toastTimer
-    );
+    if (toastTimer) {
+
+        clearTimeout(
+            toastTimer
+        );
+    }
 
 
     toastTimer =
@@ -1356,13 +1643,12 @@ function showToast(message) {
             );
 
         }, 1800);
-
 }
 
 
-/* ==========================================
+/* =========================================================
    SHUFFLE
-========================================== */
+========================================================= */
 
 function shuffle(array) {
 
@@ -1386,15 +1672,16 @@ function shuffle(array) {
             array[j],
             array[i]
         ];
-
     }
 
+
+    return array;
 }
 
 
-/* ==========================================
-   FLOATING BACKGROUND HEARTS
-========================================== */
+/* =========================================================
+   FLOATING HEARTS
+========================================================= */
 
 function createFloatingHeart() {
 
@@ -1404,7 +1691,9 @@ function createFloatingHeart() {
         );
 
 
-    if (!container) return;
+    if (!container) {
+        return;
+    }
 
 
     const heart =
@@ -1417,10 +1706,21 @@ function createFloatingHeart() {
         "floating-heart";
 
 
+    const hearts = [
+        "❤️",
+        "💕",
+        "💗",
+        "💖"
+    ];
+
+
     heart.textContent =
-        Math.random() > 0.5
-            ? "❤️"
-            : "💕";
+        hearts[
+            Math.floor(
+                Math.random() *
+                hearts.length
+            )
+        ];
 
 
     heart.style.left =
@@ -1451,19 +1751,20 @@ function createFloatingHeart() {
         heart.remove();
 
     }, 15000);
-
 }
 
 
+/* Don't create too many hearts */
+
 setInterval(
     createFloatingHeart,
-    1500
+    1600
 );
 
 
-/* ==========================================
+/* =========================================================
    HEART BURST
-========================================== */
+========================================================= */
 
 function createHeartBurst() {
 
@@ -1477,15 +1778,13 @@ function createHeartBurst() {
             createFloatingHeart,
             i * 55
         );
-
     }
-
 }
 
 
-/* ==========================================
+/* =========================================================
    CONFETTI
-========================================== */
+========================================================= */
 
 function launchConfetti(amount = 70) {
 
@@ -1493,6 +1792,11 @@ function launchConfetti(amount = 70) {
         document.getElementById(
             "confetti-container"
         );
+
+
+    if (!container) {
+        return;
+    }
 
 
     const symbols = [
@@ -1549,7 +1853,7 @@ function launchConfetti(amount = 70) {
 
         piece.style.animationDelay =
             `${
-                Math.random() * 1
+                Math.random()
             }s`;
 
 
@@ -1563,15 +1867,13 @@ function launchConfetti(amount = 70) {
             piece.remove();
 
         }, 7000);
-
     }
-
 }
 
 
-/* ==========================================
-   KEYBOARD ACCESSIBILITY FOR ENVELOPE
-========================================== */
+/* =========================================================
+   ENVELOPE KEYBOARD SUPPORT
+========================================================= */
 
 document.addEventListener(
     "keydown",
@@ -1584,8 +1886,8 @@ document.addEventListener(
 
 
         if (
-            document.activeElement ===
-                envelope &&
+            envelope &&
+            document.activeElement === envelope &&
             (
                 event.key === "Enter" ||
                 event.key === " "
@@ -1595,24 +1897,56 @@ document.addEventListener(
             event.preventDefault();
 
             openLetter();
-
         }
-
     }
 );
 
 
-/* ==========================================
-   INITIALIZE
-========================================== */
+/* =========================================================
+   INITIALIZATION
+========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
     () => {
 
+        /*
+           Start clean.
+        */
+
+        score = 0;
+
+        currentLevel = 0;
+
+        highestUnlockedLevel = 1;
+
+
         updateHUD();
 
         refreshMap();
 
+
+        /*
+           Make sure completion modal
+           starts hidden.
+        */
+
+        const modal =
+            document.getElementById(
+                "level-complete-modal"
+            );
+
+
+        if (modal) {
+
+            modal.classList.add(
+                "hidden"
+            );
+        }
+
+
+        console.log(
+            "❤️ Birthday Adventure loaded successfully."
+        );
     }
 );
