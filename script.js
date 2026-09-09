@@ -1,162 +1,290 @@
-/* =========================================================
-   OUR BIRTHDAY ADVENTURE ❤️
-   ========================================================= */
+/* ==========================================
+   BIRTHDAY ADVENTURE
+   Uses ONLY:
+   photo1.jpg = Wedding
+   photo2.jpg = Japan
+   photo3.jpg = Wife + Jarren
+   photo4.jpg = Family
+   photo5.jpg = First Date
+========================================== */
 
 
-/* =========================================================
+/* ==========================================
    GAME STATE
-========================================================= */
+========================================== */
 
-let totalScore = 0;
+let score = 0;
 
-let completedLevels = 0;
+let highestUnlockedLevel = 1;
+
+let currentLevel = 0;
+
+let pendingNextLevel = null;
+
+const completedLevels = new Set();
 
 
-/* =========================================================
-   PHOTO CONFIGURATION
-========================================================= */
+/* ==========================================
+   SCREENS
+========================================== */
 
-/*
-    Your photos live here:
-
-    images/photo1.jpg
-    images/photo2.jpg
-    etc.
-
-    Change the filenames below if necessary.
-*/
-
-const photos = [
-    "images/photo1.jpg",
-    "images/photo2.jpg",
-    "images/photo3.jpg",
-    "images/photo4.jpg",
-    "images/photo5.jpg",
-    "images/photo6.jpg",
-    "images/photo7.jpg",
-    "images/photo8.jpg",
-    "images/photo9.jpg",
-    "images/photo10.jpg"
+const screenIds = [
+    "start-screen",
+    "map-screen",
+    "quiz-screen",
+    "memory-screen",
+    "hearts-screen",
+    "family-screen",
+    "letter-screen",
+    "final-screen"
 ];
 
 
-/* =========================================================
-   SCREEN MANAGEMENT
-========================================================= */
+function showScreen(id) {
 
-function showScreen(id, level = 0) {
+    screenIds.forEach(screenId => {
 
-    document.querySelectorAll(".screen")
-        .forEach(screen => {
+        const screen =
+            document.getElementById(screenId);
 
+        if (screen) {
             screen.classList.remove("active");
+        }
 
-        });
-
-
-    document.getElementById(id)
-        .classList.add("active");
-
-
-    document.getElementById("current-level")
-        .textContent = level;
-
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
     });
 
+
+    const target =
+        document.getElementById(id);
+
+    if (target) {
+
+        target.classList.add("active");
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
 }
 
 
-/* =========================================================
-   SCORE
-========================================================= */
-
-function addScore(points) {
-
-    totalScore += points;
-
-    document.getElementById("score")
-        .textContent = totalScore;
-
-}
-
-
-/* =========================================================
+/* ==========================================
    START
-========================================================= */
+========================================== */
 
 function startGame() {
 
-    showScreen("map-screen");
+    currentLevel = 0;
 
-    createFloatingHearts();
+    updateHUD();
+
+    showMap();
+
+    showToast(
+        "Your adventure begins ❤️"
+    );
 
 }
 
 
-/* =========================================================
-   LEVEL OPENING
-========================================================= */
+/* ==========================================
+   MAP
+========================================== */
+
+function showMap() {
+
+    currentLevel = 0;
+
+    updateHUD();
+
+    refreshMap();
+
+    showScreen("map-screen");
+
+}
+
+
+function refreshMap() {
+
+    for (let level = 1; level <= 5; level++) {
+
+        const card =
+            document.getElementById(
+                `level-card-${level}`
+            );
+
+        if (!card) continue;
+
+
+        const unlocked =
+            level <= highestUnlockedLevel;
+
+
+        card.classList.toggle(
+            "unlocked",
+            unlocked
+        );
+
+        card.classList.toggle(
+            "locked",
+            !unlocked
+        );
+
+        card.classList.toggle(
+            "completed",
+            completedLevels.has(level)
+        );
+
+
+        const oldButton =
+            card.querySelector(
+                ".level-button"
+            );
+
+        const oldLock =
+            card.querySelector(
+                ".lock"
+            );
+
+
+        if (unlocked) {
+
+            if (oldLock) {
+                oldLock.remove();
+            }
+
+
+            if (!oldButton) {
+
+                const button =
+                    document.createElement(
+                        "button"
+                    );
+
+                button.className =
+                    "level-button";
+
+                button.textContent =
+                    completedLevels.has(level)
+                        ? "REPLAY"
+                        : "PLAY";
+
+                button.onclick =
+                    () => openLevel(level);
+
+                card.appendChild(button);
+
+            } else {
+
+                oldButton.textContent =
+                    completedLevels.has(level)
+                        ? "REPLAY"
+                        : "PLAY";
+
+                oldButton.onclick =
+                    () => openLevel(level);
+
+            }
+
+        } else {
+
+            if (oldButton) {
+                oldButton.remove();
+            }
+
+
+            if (!oldLock) {
+
+                const lock =
+                    document.createElement(
+                        "span"
+                    );
+
+                lock.className =
+                    "lock";
+
+                lock.textContent =
+                    "🔒";
+
+                card.appendChild(lock);
+
+            }
+
+        }
+
+    }
+
+}
+
+
+/* ==========================================
+   OPEN LEVEL
+========================================== */
 
 function openLevel(level) {
+
+    if (level > highestUnlockedLevel) {
+
+        showToast(
+            "Complete the previous level first ❤️"
+        );
+
+        return;
+
+    }
+
+
+    currentLevel = level;
+
+    updateHUD();
+
 
     switch (level) {
 
         case 1:
 
-            showScreen(
-                "quiz-screen",
-                1
-            );
+            resetQuiz();
 
-            startQuiz();
+            showScreen("quiz-screen");
 
             break;
 
 
         case 2:
 
-            showScreen(
-                "memory-screen",
-                2
-            );
+            resetMemoryGame();
 
-            startMemoryGame();
+            showScreen("memory-screen");
 
             break;
 
 
         case 3:
 
-            showScreen(
-                "hearts-screen",
-                3
-            );
+            resetHeartHunt();
 
-            resetHeartGame();
+            showScreen("hearts-screen");
 
             break;
 
 
         case 4:
 
-            showScreen(
-                "family-screen",
-                4
-            );
+            resetFamily();
+
+            showScreen("family-screen");
 
             break;
 
 
         case 5:
 
-            showScreen(
-                "letter-screen",
-                5
-            );
+            resetLetter();
+
+            showScreen("letter-screen");
 
             break;
 
@@ -165,195 +293,111 @@ function openLevel(level) {
 }
 
 
-/* =========================================================
-   UNLOCK LEVEL
-========================================================= */
+/* ==========================================
+   HUD
+========================================== */
 
-function unlockLevel(level) {
+function updateHUD() {
 
-    const card =
-        document.getElementById(
-            `level-card-${level}`
-        );
-
-
-    if (!card) return;
+    document.getElementById(
+        "current-level"
+    ).textContent =
+        currentLevel;
 
 
-    card.classList.remove("locked");
-
-    card.classList.add("unlocked");
-
-
-    const lock =
-        card.querySelector(".lock");
-
-    if (lock) {
-        lock.remove();
-    }
-
-
-    /*
-        Add the PLAY button only once.
-    */
-
-    if (!card.querySelector("button")) {
-
-        const button =
-            document.createElement("button");
-
-        button.textContent =
-            level === 5
-                ? "OPEN"
-                : "PLAY";
-
-        button.onclick = () =>
-            openLevel(level);
-
-        card.appendChild(button);
-
-    }
+    document.getElementById(
+        "score"
+    ).textContent =
+        score;
 
 }
 
 
-/* =========================================================
-   COMPLETE LEVEL
-========================================================= */
+/* ==========================================
+   QUIZ
+========================================== */
 
-function completeLevel(level) {
+const quizQuestions = [
 
-    completedLevels++;
+    {
+        question:
+            "Where did our story begin?",
 
-    addScore(100);
+        answers: [
+            "With our first date ❤️",
+            "In Japan 🇯🇵",
+            "At our wedding 💍"
+        ],
 
+        correct: 0,
 
-    if (level < 5) {
-
-        unlockLevel(level + 1);
-
-    }
-
-
-    toast(
-        `🎉 Level ${level} complete! +100 ❤️`
-    );
-
-
-    setTimeout(() => {
-
-        showScreen(
-            "map-screen"
-        );
-
-    }, 1500);
-
-}
-
-
-/* =========================================================
-   LEVEL 1 — QUIZ
-========================================================= */
-
-
-/*
-    IMPORTANT:
-
-    These questions are intentionally generic.
-
-    You can replace them with your REAL memories.
-
-    Example:
-
-    question:
-    "Where did we go for our first date?"
-
-    answers:
-    [
-        "Singapore",
-        "Japan",
-        "Manila",
-        "Cebu"
-    ]
-
-    correct:
-    0
-*/
-
-const questions = [
+        message:
+            "Exactly. One date changed everything. ❤️"
+    },
 
     {
         question:
             "What is my favorite thing about you?",
 
         answers: [
-            "Your cooking 😋",
-            "Everything about you ❤️",
-            "Your ability to steal the blanket 😂",
-            "Your jokes 😆"
+            "Your smile",
+            "Your laugh",
+            "Everything about you ❤️"
         ],
 
-        correct: 1
-    },
+        correct: 2,
 
+        message:
+            "Correct. There was never just one thing. ❤️"
+    },
 
     {
         question:
-            "What do I value most about our life together?",
+            "Who made our little family even more special?",
 
         answers: [
-            "Our adventures",
-            "Our house",
-            "Our family ❤️",
-            "Our Netflix account 😂"
+            "Jarren ❤️",
+            "Nobody",
+            "The neighbors 😆"
         ],
 
-        correct: 2
-    },
+        correct: 0,
 
+        message:
+            "Our greatest little adventure. 👨‍👩‍👦"
+    },
 
     {
         question:
-            "Who is the cutest person in our family?",
+            "If I could start our story again, what would I do?",
 
         answers: [
-            "Me 😎",
-            "You ❤️",
-            "Jarren 👶",
-            "This is a trick question!"
-        ],
-
-        correct: 3
-    },
-
-
-    {
-        question:
-            "If I could choose my wife again, what would I do?",
-
-        answers: [
-            "Think about it",
-            "Maybe",
+            "Take a different path",
             "Choose you again ❤️",
-            "Ask for a discount 😂"
+            "Stay home"
         ],
 
-        correct: 2
-    },
+        correct: 1,
 
+        message:
+            "Again and again and again. ❤️"
+    },
 
     {
         question:
-            "Where is my favorite place to be?",
+            "What do I want most for our future?",
 
         answers: [
-            "At work",
-            "At the gym",
-            "Anywhere with you ❤️",
-            "In front of my computer"
+            "More adventures",
+            "More memories",
+            "More years together",
+            "All of the above ❤️"
         ],
 
-        correct: 2
+        correct: 3,
+
+        message:
+            "That's the answer. Always. ❤️"
     }
 
 ];
@@ -361,30 +405,24 @@ const questions = [
 
 let quizIndex = 0;
 
-let quizScore = 0;
+let quizLocked = false;
 
 
-function startQuiz() {
+function resetQuiz() {
 
     quizIndex = 0;
 
-    quizScore = 0;
+    quizLocked = false;
 
-    showQuestion();
+    renderQuestion();
 
 }
 
 
-function showQuestion() {
+function renderQuestion() {
 
     const question =
-        questions[quizIndex];
-
-
-    document.getElementById(
-        "question"
-    ).textContent =
-        question.question;
+        quizQuestions[quizIndex];
 
 
     document.getElementById(
@@ -394,12 +432,18 @@ function showQuestion() {
 
 
     document.getElementById(
+        "question"
+    ).textContent =
+        question.question;
+
+
+    document.getElementById(
         "quiz-progress"
     ).style.width =
-        (
+        `${
             ((quizIndex + 1) /
-            questions.length) * 100
-        ) + "%";
+            quizQuestions.length) * 100
+        }%`;
 
 
     const answers =
@@ -425,20 +469,21 @@ function showQuestion() {
                 );
 
 
-            button.className =
-                "answer";
-
-
             button.textContent =
                 answer;
 
 
             button.onclick =
                 () =>
-                    answerQuestion(index);
+                    selectQuizAnswer(
+                        index,
+                        button
+                    );
 
 
-            answers.appendChild(button);
+            answers.appendChild(
+                button
+            );
 
         }
     );
@@ -446,170 +491,184 @@ function showQuestion() {
 }
 
 
-function answerQuestion(index) {
+function selectQuizAnswer(
+    answerIndex,
+    selectedButton
+) {
+
+    if (quizLocked) return;
+
+    quizLocked = true;
+
 
     const question =
-        questions[quizIndex];
+        quizQuestions[quizIndex];
 
 
     const buttons =
         document.querySelectorAll(
-            ".answer"
+            "#answers button"
         );
 
 
-    buttons.forEach(button => {
+    buttons.forEach(
+        (button, index) => {
 
-        button.disabled = true;
+            button.disabled = true;
 
-    });
+
+            if (
+                index ===
+                question.correct
+            ) {
+
+                button.classList.add(
+                    "correct"
+                );
+
+            }
+
+        }
+    );
 
 
     if (
-        index === question.correct
+        answerIndex ===
+        question.correct
     ) {
 
-        buttons[index]
-            .classList.add("correct");
+        selectedButton.classList.add(
+            "correct"
+        );
 
-
-        quizScore++;
-
-
-        addScore(50);
-
+        addScore(10);
 
         document.getElementById(
             "quiz-feedback"
         ).textContent =
-            "❤️ Correct!";
+            question.message;
 
+    } else {
 
-        setTimeout(
-            nextQuestion,
-            900
+        selectedButton.classList.add(
+            "wrong"
         );
-
-    }
-
-    else {
-
-        buttons[index]
-            .classList.add("wrong");
-
-
-        buttons[
-            question.correct
-        ].classList.add("correct");
-
 
         document.getElementById(
             "quiz-feedback"
         ).textContent =
-            "😜 Almost!";
-
-
-        setTimeout(
-            nextQuestion,
-            1200
-        );
+            "Almost! But I still love you. 😘";
 
     }
+
+
+    setTimeout(() => {
+
+        quizIndex++;
+
+        quizLocked = false;
+
+
+        if (
+            quizIndex <
+            quizQuestions.length
+        ) {
+
+            renderQuestion();
+
+        } else {
+
+            completeLevel(
+                1,
+                25,
+                "Our Beginning ❤️",
+                "You unlocked the memories that came next."
+            );
+
+        }
+
+    }, 1300);
 
 }
 
 
-function nextQuestion() {
+/* ==========================================
+   MEMORY GAME
 
-    quizIndex++;
+   IMPORTANT:
+   Five actual photos are duplicated here
+   to create five matching pairs.
+========================================== */
 
+const memoryPhotos = [
 
-    if (
-        quizIndex <
-        questions.length
-    ) {
+    {
+        id: "wedding",
+        src: "images/photo1.jpg"
+    },
 
-        showQuestion();
+    {
+        id: "japan",
+        src: "images/photo2.jpg"
+    },
 
+    {
+        id: "jarren",
+        src: "images/photo3.jpg"
+    },
+
+    {
+        id: "family",
+        src: "images/photo4.jpg"
+    },
+
+    {
+        id: "first-date",
+        src: "images/photo5.jpg"
     }
 
-    else {
-
-        toast(
-            `🏆 ${quizScore}/5 correct!`
-        );
+];
 
 
-        setTimeout(() => {
-
-            completeLevel(1);
-
-        }, 1500);
-
-    }
-
-}
-
-
-/* =========================================================
-   LEVEL 2 — PHOTO MEMORY MATCH
-========================================================= */
-
-
-/*
-    We use 5 of your photos.
-
-    Each photo appears twice.
-
-    This creates 10 cards.
-*/
-
-let memoryFirst = null;
-
-let memorySecond = null;
+let flippedCards = [];
 
 let memoryLocked = false;
 
-let memoryMatches = 0;
+let matches = 0;
 
 
-function startMemoryGame() {
+function resetMemoryGame() {
 
-    memoryFirst = null;
-
-    memorySecond = null;
+    flippedCards = [];
 
     memoryLocked = false;
 
-    memoryMatches = 0;
+    matches = 0;
 
 
     document.getElementById(
         "matches"
-    ).textContent = "0";
+    ).textContent = 0;
 
 
-    const selectedPhotos = [
+    const deck = [
 
-        photos[0],
-        photos[1],
-        photos[2],
-        photos[3],
-        photos[4]
+        ...memoryPhotos,
+        ...memoryPhotos
 
-    ];
+    ].map(
+        (photo, index) => ({
+
+            ...photo,
+
+            uniqueId:
+                `${photo.id}-${index}`
+
+        })
+    );
 
 
-    let cards = [
-        ...selectedPhotos,
-        ...selectedPhotos
-    ];
-
-
-    cards =
-        cards.sort(
-            () => Math.random() - 0.5
-        );
+    shuffle(deck);
 
 
     const grid =
@@ -621,65 +680,69 @@ function startMemoryGame() {
     grid.innerHTML = "";
 
 
-    cards.forEach(
-        (photo, index) => {
+    deck.forEach(photo => {
 
-            const card =
-                document.createElement(
-                    "button"
-                );
-
-
-            card.className =
-                "memory-card";
-
-
-            card.dataset.photo =
-                photo;
-
-
-            const image =
-                document.createElement(
-                    "img"
-                );
-
-
-            image.src = photo;
-
-            image.alt =
-                "Our memory";
-
-
-            card.appendChild(
-                image
+        const card =
+            document.createElement(
+                "button"
             );
 
 
-            card.onclick =
-                () =>
-                    flipMemory(card);
+        card.className =
+            "memory-card";
 
 
-            grid.appendChild(card);
+        card.dataset.id =
+            photo.id;
 
-        }
-    );
+
+        card.dataset.unique =
+            photo.uniqueId;
+
+
+        card.innerHTML = `
+
+            <div class="memory-card-inner">
+
+                <div class="memory-front">
+                    ❤️
+                </div>
+
+                <div class="memory-back">
+                    <img
+                        src="${photo.src}"
+                        alt="Our memory"
+                    >
+                </div>
+
+            </div>
+
+        `;
+
+
+        card.onclick =
+            () => flipMemoryCard(card);
+
+
+        grid.appendChild(card);
+
+    });
 
 }
 
 
-function flipMemory(card) {
+function flipMemoryCard(card) {
 
     if (
         memoryLocked ||
-        card === memoryFirst ||
+        card.classList.contains(
+            "flipped"
+        ) ||
         card.classList.contains(
             "matched"
         )
     ) {
-
         return;
-
     }
 
 
@@ -688,87 +751,94 @@ function flipMemory(card) {
     );
 
 
-    if (!memoryFirst) {
-
-        memoryFirst = card;
-
-        return;
-
-    }
-
-
-    memorySecond = card;
-
-    memoryLocked = true;
+    flippedCards.push(card);
 
 
     if (
-        memoryFirst.dataset.photo ===
-        memorySecond.dataset.photo
+        flippedCards.length === 2
     ) {
 
-        memoryFirst.classList.add(
+        checkMemoryMatch();
+
+    }
+
+}
+
+
+function checkMemoryMatch() {
+
+    const [
+        first,
+        second
+    ] = flippedCards;
+
+
+    if (
+        first.dataset.id ===
+        second.dataset.id
+    ) {
+
+        first.classList.add(
             "matched"
         );
 
-        memorySecond.classList.add(
+        second.classList.add(
             "matched"
         );
 
 
-        memoryMatches++;
+        matches++;
 
 
         document.getElementById(
             "matches"
         ).textContent =
-            memoryMatches;
+            matches;
 
 
-        addScore(50);
+        addScore(10);
 
 
-        toast(
-            "❤️ You found a memory!"
+        flippedCards = [];
+
+
+        showToast(
+            "Memory matched! +10 ❤️"
         );
 
 
-        memoryFirst = null;
-
-        memorySecond = null;
-
-        memoryLocked = false;
-
-
-        if (
-            memoryMatches === 5
-        ) {
+        if (matches === 5) {
 
             setTimeout(() => {
 
-                completeLevel(2);
+                completeLevel(
+                    2,
+                    25,
+                    "Our Memories 🧩",
+                    "Five photos, but so many memories behind them."
+                );
 
-            }, 1200);
+            }, 700);
 
         }
 
-    }
+    } else {
 
-    else {
+        memoryLocked = true;
+
 
         setTimeout(() => {
 
-            memoryFirst.classList
-                .remove("flipped");
+            first.classList.remove(
+                "flipped"
+            );
+
+            second.classList.remove(
+                "flipped"
+            );
 
 
-            memorySecond.classList
-                .remove("flipped");
-
-
-            memoryFirst = null;
-
-            memorySecond = null;
+            flippedCards = [];
 
             memoryLocked = false;
 
@@ -779,39 +849,54 @@ function flipMemory(card) {
 }
 
 
-/* =========================================================
-   LEVEL 3 — FIND HEARTS
-========================================================= */
+/* ==========================================
+   HEART HUNT
+========================================== */
 
 let heartsFound = 0;
 
 
-function resetHeartGame() {
+function resetHeartHunt() {
 
     heartsFound = 0;
 
 
     document.getElementById(
         "hearts-found"
-    ).textContent = "0";
+    ).textContent = 0;
 
 
     document.querySelectorAll(
         ".hidden-heart"
     ).forEach(heart => {
 
-        heart.style.display =
-            "block";
+        heart.classList.remove(
+            "found"
+        );
+
+        heart.disabled = false;
 
     });
 
 }
 
 
-function findHeart(element) {
+function findHeart(heart) {
 
-    element.style.display =
-        "none";
+    if (
+        heart.classList.contains(
+            "found"
+        )
+    ) {
+        return;
+    }
+
+
+    heart.classList.add(
+        "found"
+    );
+
+    heart.disabled = true;
 
 
     heartsFound++;
@@ -823,72 +908,84 @@ function findHeart(element) {
         heartsFound;
 
 
-    addScore(50);
+    addScore(10);
 
 
-    toast(
-        "❤️ You found one!"
+    showToast(
+        "You found my heart ❤️ +10"
     );
 
 
-    if (
-        heartsFound === 5
-    ) {
+    if (heartsFound === 5) {
 
         setTimeout(() => {
 
-            toast(
-                "🎉 You found all my hearts!"
+            completeLevel(
+                3,
+                25,
+                "Our Adventures 🇯🇵",
+                "I'd travel anywhere as long as I get to experience it with you."
             );
 
-
-            completeLevel(3);
-
-        }, 1000);
+        }, 650);
 
     }
 
 }
 
 
-/* =========================================================
-   LEVEL 4 — FAMILY PHOTO GALLERY
-========================================================= */
+/* ==========================================
+   FAMILY
+========================================== */
 
 const familyMessages = [
 
-    `
-    ❤️ This is one of the memories
-    that reminds me how lucky I am
-    to have you in my life.
-    `,
+    "Watching you become Jarren's mom gave me another reason to love and admire you. ❤️",
 
-
-    `
-    💕 You are one of the most
-    important people in my entire world.
-    I hope you always know that.
-    `,
-
-
-    `
-    👨‍👩‍👦 Our little family is one
-    of the greatest things that ever
-    happened to me.
-    `,
-
-
-    `
-    ✨ Every memory we make together
-    is another chapter in the story
-    I never want to end.
-    `
+    "This is my favorite team: you, me, and Jarren. Our little family is the best thing we've built together. 👨‍👩‍👦❤️"
 
 ];
 
 
-let familyVisited =
+let viewedFamilyMemories =
     new Set();
+
+
+function resetFamily() {
+
+    viewedFamilyMemories =
+        new Set();
+
+
+    document.getElementById(
+        "family-count"
+    ).textContent = 0;
+
+
+    document.getElementById(
+        "family-message"
+    ).textContent =
+        "Choose a memory ❤️";
+
+
+    document.getElementById(
+        "family-continue"
+    ).classList.add(
+        "hidden"
+    );
+
+
+    document.querySelectorAll(
+        ".family-photo"
+    ).forEach(photo => {
+
+        photo.classList.remove(
+            "viewed"
+        );
+
+    });
+
+}
 
 
 function showFamilyMemory(index) {
@@ -900,29 +997,43 @@ function showFamilyMemory(index) {
 
 
     if (
-        !familyVisited.has(index)
+        !viewedFamilyMemories.has(
+            index
+        )
     ) {
 
-        familyVisited.add(index);
+        viewedFamilyMemories.add(
+            index
+        );
 
-        addScore(50);
+
+        document.getElementById(
+            `family-photo-${index}`
+        ).classList.add(
+            "viewed"
+        );
+
+
+        document.getElementById(
+            "family-count"
+        ).textContent =
+            viewedFamilyMemories.size;
+
+
+        addScore(10);
 
     }
 
 
     if (
-        familyVisited.size === 4
+        viewedFamilyMemories.size ===
+        2
     ) {
 
         document.getElementById(
             "family-continue"
         ).classList.remove(
             "hidden"
-        );
-
-
-        toast(
-            "🏆 Family memories unlocked!"
         );
 
     }
@@ -932,16 +1043,51 @@ function showFamilyMemory(index) {
 
 function completeFamily() {
 
-    completeLevel(4);
+    completeLevel(
+        4,
+        25,
+        "Our Little Family 👨‍👩‍👦",
+        "You unlocked the final chapter of our adventure."
+    );
 
 }
 
 
-/* =========================================================
-   LEVEL 5 — LETTER
-========================================================= */
+/* ==========================================
+   LETTER
+========================================== */
+
+let letterOpened = false;
+
+
+function resetLetter() {
+
+    letterOpened = false;
+
+
+    document.getElementById(
+        "envelope"
+    ).classList.remove(
+        "hidden"
+    );
+
+
+    document.getElementById(
+        "letter-content"
+    ).classList.add(
+        "hidden"
+    );
+
+}
+
 
 function openLetter() {
+
+    if (letterOpened) return;
+
+
+    letterOpened = true;
+
 
     document.getElementById(
         "envelope"
@@ -957,70 +1103,300 @@ function openLetter() {
     );
 
 
-    addScore(100);
+    addScore(25);
+
+
+    createHeartBurst();
+
+
+    showToast(
+        "One last message from me ❤️"
+    );
 
 }
 
 
+/* ==========================================
+   FINAL
+========================================== */
+
 function showFinal() {
+
+    if (
+        !completedLevels.has(5)
+    ) {
+
+        completedLevels.add(5);
+
+        addScore(50);
+
+    }
+
+
+    highestUnlockedLevel = 5;
+
+    currentLevel = 5;
+
+    updateHUD();
+
 
     document.getElementById(
         "final-score"
     ).textContent =
-        totalScore;
+        score;
 
 
     showScreen(
-        "final-screen",
-        5
+        "final-screen"
     );
 
 
-    createConfetti();
+    launchConfetti(80);
 
 }
 
 
-/* =========================================================
-   FINAL GIFT
-========================================================= */
+/* ==========================================
+   GIFT
+========================================== */
+
+let giftOpened = false;
+
 
 function openGift() {
 
-    document.getElementById(
-        "gift"
-    ).style.display =
-        "none";
+    if (giftOpened) return;
+
+    giftOpened = true;
+
+
+    const gift =
+        document.getElementById(
+            "gift"
+        );
+
+
+    gift.classList.add(
+        "opened"
+    );
+
+
+    setTimeout(() => {
+
+        gift.style.display =
+            "none";
+
+
+        document.querySelector(
+            ".tap-gift"
+        ).style.display =
+            "none";
+
+
+        document.getElementById(
+            "gift-message"
+        ).classList.remove(
+            "hidden"
+        );
+
+
+        launchConfetti(150);
+
+        createHeartBurst();
+
+
+        setTimeout(() => {
+
+            document.getElementById(
+                "gift-message"
+            ).scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+
+        }, 200);
+
+    }, 450);
+
+}
+
+
+/* ==========================================
+   COMPLETE LEVEL
+========================================== */
+
+function completeLevel(
+    level,
+    bonusPoints,
+    title,
+    message
+) {
+
+    const firstCompletion =
+        !completedLevels.has(level);
+
+
+    if (firstCompletion) {
+
+        completedLevels.add(level);
+
+        addScore(bonusPoints);
+
+    }
+
+
+    if (level < 5) {
+
+        highestUnlockedLevel =
+            Math.max(
+                highestUnlockedLevel,
+                level + 1
+            );
+
+
+        pendingNextLevel =
+            level + 1;
+
+    }
 
 
     document.getElementById(
-        "gift-message"
+        "complete-title"
+    ).textContent =
+        title;
+
+
+    document.getElementById(
+        "complete-message"
+    ).textContent =
+        message;
+
+
+    document.getElementById(
+        "points-earned"
+    ).textContent =
+        firstCompletion
+            ? bonusPoints
+            : 0;
+
+
+    document.getElementById(
+        "level-complete-modal"
     ).classList.remove(
         "hidden"
     );
 
 
-    createConfetti();
+    launchConfetti(35);
 
 }
 
 
-/* =========================================================
-   FLOATING HEARTS
-========================================================= */
+function continueJourney() {
 
-let heartsStarted = false;
+    document.getElementById(
+        "level-complete-modal"
+    ).classList.add(
+        "hidden"
+    );
 
 
-function createFloatingHearts() {
+    showMap();
 
-    if (heartsStarted) {
-        return;
+}
+
+
+/* ==========================================
+   SCORE
+========================================== */
+
+function addScore(points) {
+
+    score += points;
+
+    updateHUD();
+
+}
+
+
+/* ==========================================
+   TOAST
+========================================== */
+
+let toastTimer;
+
+
+function showToast(message) {
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+
+    toast.textContent =
+        message;
+
+
+    toast.classList.add(
+        "show"
+    );
+
+
+    clearTimeout(
+        toastTimer
+    );
+
+
+    toastTimer =
+        setTimeout(() => {
+
+            toast.classList.remove(
+                "show"
+            );
+
+        }, 1800);
+
+}
+
+
+/* ==========================================
+   SHUFFLE
+========================================== */
+
+function shuffle(array) {
+
+    for (
+        let i = array.length - 1;
+        i > 0;
+        i--
+    ) {
+
+        const j =
+            Math.floor(
+                Math.random() *
+                (i + 1)
+            );
+
+
+        [
+            array[i],
+            array[j]
+        ] = [
+            array[j],
+            array[i]
+        ];
+
     }
 
+}
 
-    heartsStarted = true;
 
+/* ==========================================
+   FLOATING BACKGROUND HEARTS
+========================================== */
+
+function createFloatingHeart() {
 
     const container =
         document.getElementById(
@@ -1028,116 +1404,109 @@ function createFloatingHearts() {
         );
 
 
-    setInterval(() => {
-
-        const heart =
-            document.createElement(
-                "div"
-            );
+    if (!container) return;
 
 
-        heart.textContent =
-            Math.random() > 0.5
-                ? "❤️"
-                : "💕";
-
-
-        heart.style.position =
-            "fixed";
-
-
-        heart.style.left =
-            Math.random() * 100 +
-            "vw";
-
-
-        heart.style.bottom =
-            "-30px";
-
-
-        heart.style.fontSize =
-            (10 +
-            Math.random() * 18) +
-            "px";
-
-
-        heart.style.opacity =
-            0.15 +
-            Math.random() * 0.3;
-
-
-        container.appendChild(
-            heart
+    const heart =
+        document.createElement(
+            "div"
         );
 
 
-        const duration =
-            5000 +
-            Math.random() * 4000;
+    heart.className =
+        "floating-heart";
 
 
-        heart.animate(
-
-            [
-
-                {
-                    transform:
-                        "translateY(0)"
-                },
-
-                {
-                    transform:
-                        "translateY(-110vh)"
-                }
-
-            ],
-
-            {
-
-                duration,
-
-                easing:
-                    "linear"
-
-            }
-
-        );
+    heart.textContent =
+        Math.random() > 0.5
+            ? "❤️"
+            : "💕";
 
 
-        setTimeout(() => {
-
-            heart.remove();
-
-        }, duration);
+    heart.style.left =
+        `${Math.random() * 100}%`;
 
 
-    }, 900);
+    heart.style.fontSize =
+        `${
+            12 +
+            Math.random() * 18
+        }px`;
+
+
+    heart.style.animationDuration =
+        `${
+            7 +
+            Math.random() * 7
+        }s`;
+
+
+    container.appendChild(
+        heart
+    );
+
+
+    setTimeout(() => {
+
+        heart.remove();
+
+    }, 15000);
 
 }
 
 
-/* =========================================================
+setInterval(
+    createFloatingHeart,
+    1500
+);
+
+
+/* ==========================================
+   HEART BURST
+========================================== */
+
+function createHeartBurst() {
+
+    for (
+        let i = 0;
+        i < 16;
+        i++
+    ) {
+
+        setTimeout(
+            createFloatingHeart,
+            i * 55
+        );
+
+    }
+
+}
+
+
+/* ==========================================
    CONFETTI
-========================================================= */
+========================================== */
 
-function createConfetti() {
+function launchConfetti(amount = 70) {
 
-    const emojis = [
+    const container =
+        document.getElementById(
+            "confetti-container"
+        );
 
+
+    const symbols = [
         "❤️",
         "💕",
-        "🎉",
         "✨",
-        "🎊",
-        "💖",
-        "🌹"
-
+        "🎉",
+        "💖"
     ];
 
 
     for (
         let i = 0;
-        i < 60;
+        i < amount;
         i++
     ) {
 
@@ -1147,113 +1516,103 @@ function createConfetti() {
             );
 
 
+        piece.className =
+            "confetti";
+
+
         piece.textContent =
-            emojis[
+            symbols[
                 Math.floor(
                     Math.random() *
-                    emojis.length
+                    symbols.length
                 )
             ];
 
 
-        piece.style.position =
-            "fixed";
-
-
         piece.style.left =
-            Math.random() * 100 +
-            "vw";
-
-
-        piece.style.top =
-            "-30px";
+            `${Math.random() * 100}%`;
 
 
         piece.style.fontSize =
-            (15 +
-            Math.random() * 25) +
-            "px";
+            `${
+                10 +
+                Math.random() * 16
+            }px`;
 
 
-        piece.style.zIndex =
-            "999";
+        piece.style.animationDuration =
+            `${
+                2.5 +
+                Math.random() * 3
+            }s`;
 
 
-        piece.style.pointerEvents =
-            "none";
+        piece.style.animationDelay =
+            `${
+                Math.random() * 1
+            }s`;
 
 
-        document.body.appendChild(
+        container.appendChild(
             piece
         );
 
 
-        const animation =
-            piece.animate(
+        setTimeout(() => {
 
-                [
+            piece.remove();
 
-                    {
-                        transform:
-                            "translateY(0) rotate(0deg)",
-                        opacity: 1
-                    },
-
-                    {
-                        transform:
-                            `translateY(110vh) rotate(${Math.random() * 720}deg)`,
-                        opacity: 0
-                    }
-
-                ],
-
-                {
-
-                    duration:
-                        2500 +
-                        Math.random() * 2500,
-
-                    easing:
-                        "ease-out"
-
-                }
-
-            );
-
-
-        animation.onfinish =
-            () => {
-
-                piece.remove();
-
-            };
+        }, 7000);
 
     }
 
 }
 
 
-/* =========================================================
+/* ==========================================
+   KEYBOARD ACCESSIBILITY FOR ENVELOPE
+========================================== */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        const envelope =
+            document.getElementById(
+                "envelope"
+            );
+
+
+        if (
+            document.activeElement ===
+                envelope &&
+            (
+                event.key === "Enter" ||
+                event.key === " "
+            )
+        ) {
+
+            event.preventDefault();
+
+            openLetter();
+
+        }
+
+    }
+);
+
+
+/* ==========================================
    INITIALIZE
-========================================================= */
+========================================== */
 
 document.addEventListener(
     "DOMContentLoaded",
     () => {
 
-        /*
-            Make sure the first photo
-            exists before starting.
-        */
+        updateHUD();
 
-        console.log(
-            "❤️ Birthday Adventure loaded!"
-        );
-
-        console.log(
-            "Photos configured:",
-            photos
-        );
+        refreshMap();
 
     }
 );
