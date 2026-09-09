@@ -1,169 +1,538 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>A Birthday Surprise ❤️</title>
+    <title>Our Birthday Adventure ❤️</title>
 
-  <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <!-- Background hearts -->
-  <div id="hearts"></div>
+    <!-- Floating hearts -->
+    <div id="floating-hearts"></div>
 
-  <!-- GAME CONTAINER -->
-  <main class="game-container">
+    <!-- Top HUD -->
+    <header class="hud">
+        <div class="logo">❤️ OUR ADVENTURE</div>
 
-    <!-- SCREEN 1: WELCOME -->
-    <section id="welcome" class="screen active">
-      <div class="card">
-        <div class="emoji">🎂</div>
-
-        <h1>Happy Birthday, My Love ❤️</h1>
-
-        <p>
-          I made a little adventure especially for you.
-        </p>
-
-        <p class="small-text">
-          Complete the challenges to unlock your final surprise. 🎁
-        </p>
-
-        <button onclick="startGame()">
-          Start Our Adventure ❤️
-        </button>
-      </div>
-    </section>
-
-
-    <!-- SCREEN 2: QUIZ -->
-    <section id="quiz" class="screen">
-
-      <div class="card">
-        <div class="level">LEVEL 1 ❤️</div>
-
-        <h2>How Well Do You Know Us?</h2>
-
-        <p class="question">
-          What is my favorite thing about you?
-        </p>
-
-        <div class="answers">
-          <button onclick="wrongAnswer()">Your cooking 😅</button>
-
-          <button onclick="correctAnswer()">
-            Everything about you ❤️
-          </button>
-
-          <button onclick="wrongAnswer()">Your ability to steal the blanket 😂</button>
+        <div class="score">
+            ❤️ <span id="score">0</span>
         </div>
-
-        <p id="quiz-message"></p>
-      </div>
-
-    </section>
+    </header>
 
 
-    <!-- SCREEN 3: MEMORY -->
-    <section id="memory" class="screen">
+    <!-- ========================= -->
+    <!-- START SCREEN -->
+    <!-- ========================= -->
 
-      <div class="card">
-        <div class="level">LEVEL 2 📸</div>
+    <section id="start-screen" class="screen active">
 
-        <h2>A Special Memory</h2>
+        <div class="hero-card">
 
-        <p>
-          Click the heart to reveal a special memory.
-        </p>
+            <div class="big-heart">❤️</div>
 
-        <button class="heart-button" onclick="revealMemory()">
-          ❤️
-        </button>
+            <div class="eyebrow">A SPECIAL ADVENTURE</div>
 
-        <div id="memory-content" class="hidden">
+            <h1>
+                Happy Birthday,<br>
+                <span>My Love</span> ❤️
+            </h1>
 
-          <!-- Replace with your own photo -->
-          <img
-            src="images/photo1.jpg"
-            alt="Our memory"
-            class="memory-photo"
-          />
+            <p>
+                I made a little game just for you.
+            </p>
 
-          <p class="memory-message">
-            Every moment with you has become one of my favorite memories. ❤️
-          </p>
+            <p class="subtext">
+                Complete the levels, collect Love Points,
+                and unlock your final surprise.
+            </p>
 
-          <button onclick="showFinal()">
-            Continue →
-          </button>
+            <button class="primary-btn" onclick="startGame()">
+                START ADVENTURE
+                <span>→</span>
+            </button>
 
-        </div>
-      </div>
-
-    </section>
-
-
-    <!-- SCREEN 4: FINAL -->
-    <section id="final" class="screen">
-
-      <div class="card final-card">
-
-        <div class="emoji">🎉🎁❤️</div>
-
-        <h1>Congratulations!</h1>
-
-        <p class="love-points">
-          ❤️ ❤️ ❤️ ❤️ ❤️
-        </p>
-
-        <h2>You unlocked your birthday message!</h2>
-
-        <div class="letter">
-
-          <p>My Love,</p>
-
-          <p>
-            Happy Birthday! ❤️
-          </p>
-
-          <p>
-            I just want you to know how grateful I am to have you in my life.
-            Thank you for everything you do and for being such an amazing wife
-            and mother to our little family.
-          </p>
-
-          <p>
-            I may not always say it perfectly, but I love and appreciate you
-            more than words can explain.
-          </p>
-
-          <p>
-            Here's to more adventures, more memories, and more birthdays
-            together.
-          </p>
-
-          <h2>I love you ❤️</h2>
-
-          <p>
-            — Your Husband
-          </p>
+            <div class="start-hint">
+                🎮 5 Levels • ❤️ Love Points • 🎁 1 Surprise
+            </div>
 
         </div>
 
-        <button onclick="celebrate()">
-          Celebrate! 🎉
-        </button>
+    </section>
 
-      </div>
+
+    <!-- ========================= -->
+    <!-- LEVEL SELECT -->
+    <!-- ========================= -->
+
+    <section id="map-screen" class="screen">
+
+        <div class="section-container">
+
+            <div class="eyebrow">YOUR JOURNEY</div>
+
+            <h2 class="section-title">
+                The Adventure of Us ❤️
+            </h2>
+
+            <p class="section-description">
+                Complete each level to unlock the next one.
+            </p>
+
+
+            <div class="level-map">
+
+                <div class="level-card unlocked" id="level-card-1">
+
+                    <div class="level-number">01</div>
+
+                    <div class="level-icon">❓</div>
+
+                    <div>
+                        <h3>Love Quiz</h3>
+                        <p>How well do you know us?</p>
+                    </div>
+
+                    <button onclick="openLevel(1)">
+                        PLAY
+                    </button>
+
+                </div>
+
+
+                <div class="level-card locked" id="level-card-2">
+
+                    <div class="level-number">02</div>
+
+                    <div class="level-icon">🧩</div>
+
+                    <div>
+                        <h3>Memory Match</h3>
+                        <p>Find the matching memories.</p>
+                    </div>
+
+                    <span class="lock">🔒</span>
+
+                </div>
+
+
+                <div class="level-card locked" id="level-card-3">
+
+                    <div class="level-number">03</div>
+
+                    <div class="level-icon">🔎</div>
+
+                    <div>
+                        <h3>Find the Hearts</h3>
+                        <p>Can you find them all?</p>
+                    </div>
+
+                    <span class="lock">🔒</span>
+
+                </div>
+
+
+                <div class="level-card locked" id="level-card-4">
+
+                    <div class="level-number">04</div>
+
+                    <div class="level-icon">👨‍👩‍👦</div>
+
+                    <div>
+                        <h3>Our Family</h3>
+                        <p>The best thing we created.</p>
+                    </div>
+
+                    <span class="lock">🔒</span>
+
+                </div>
+
+
+                <div class="level-card locked" id="level-card-5">
+
+                    <div class="level-number">05</div>
+
+                    <div class="level-icon">💌</div>
+
+                    <div>
+                        <h3>My Letter</h3>
+                        <p>A message from my heart.</p>
+                    </div>
+
+                    <span class="lock">🔒</span>
+
+                </div>
+
+            </div>
+
+        </div>
 
     </section>
 
-  </main>
 
-  <script src="script.js"></script>
+    <!-- ========================= -->
+    <!-- LEVEL 1 QUIZ -->
+    <!-- ========================= -->
+
+    <section id="quiz-screen" class="screen">
+
+        <div class="game-card">
+
+            <div class="level-label">
+                LEVEL 01 • LOVE QUIZ
+            </div>
+
+            <div class="progress">
+                <div id="quiz-progress"></div>
+            </div>
+
+            <div class="question-counter">
+                Question <span id="question-number">1</span> of 5
+            </div>
+
+            <h2 id="question">
+                Question goes here
+            </h2>
+
+            <div id="answers" class="answers"></div>
+
+            <div id="quiz-feedback"></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- LEVEL 2 MEMORY -->
+    <!-- ========================= -->
+
+    <section id="memory-screen" class="screen">
+
+        <div class="game-card">
+
+            <div class="level-label">
+                LEVEL 02 • MEMORY MATCH
+            </div>
+
+            <h2>Find the Matching Memories 🧩</h2>
+
+            <p>
+                Match all the pairs to unlock the next level.
+            </p>
+
+            <div id="memory-grid" class="memory-grid"></div>
+
+            <p class="game-status">
+                Matches:
+                <span id="matches">0</span> / 6
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- LEVEL 3 FIND HEARTS -->
+    <!-- ========================= -->
+
+    <section id="hearts-screen" class="screen">
+
+        <div class="game-card">
+
+            <div class="level-label">
+                LEVEL 03 • HEART HUNTER
+            </div>
+
+            <h2>Find the 5 Hidden Hearts ❤️</h2>
+
+            <p>
+                They're hiding somewhere below...
+            </p>
+
+            <div id="heart-hunt">
+
+                <div class="hunt-message">
+                    🔎 Look carefully!
+                </div>
+
+                <button class="hidden-heart heart-1" onclick="findHeart(this)">
+                    ❤️
+                </button>
+
+                <button class="hidden-heart heart-2" onclick="findHeart(this)">
+                    ❤️
+                </button>
+
+                <button class="hidden-heart heart-3" onclick="findHeart(this)">
+                    ❤️
+                </button>
+
+                <button class="hidden-heart heart-4" onclick="findHeart(this)">
+                    ❤️
+                </button>
+
+                <button class="hidden-heart heart-5" onclick="findHeart(this)">
+                    ❤️
+                </button>
+
+            </div>
+
+            <p class="game-status">
+                Hearts found:
+                <span id="hearts-found">0</span> / 5
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- LEVEL 4 FAMILY -->
+    <!-- ========================= -->
+
+    <section id="family-screen" class="screen">
+
+        <div class="game-card">
+
+            <div class="level-label">
+                LEVEL 04 • OUR FAMILY
+            </div>
+
+            <h2>The Three of Us ❤️</h2>
+
+            <p>
+                Tap each person to reveal a message.
+            </p>
+
+            <div class="family-grid">
+
+                <button class="family-person" onclick="familyMessage('me')">
+
+                    <div class="person-icon">👨</div>
+
+                    <strong>ME</strong>
+
+                    <small>Your husband</small>
+
+                </button>
+
+
+                <button class="family-person" onclick="familyMessage('wife')">
+
+                    <div class="person-icon">👩</div>
+
+                    <strong>YOU</strong>
+
+                    <small>My beautiful wife</small>
+
+                </button>
+
+
+                <button class="family-person" onclick="familyMessage('jarren')">
+
+                    <div class="person-icon">👶</div>
+
+                    <strong>JARREN</strong>
+
+                    <small>Our little one</small>
+
+                </button>
+
+            </div>
+
+
+            <div id="family-message" class="family-message">
+                Tap someone above ❤️
+            </div>
+
+
+            <button
+                id="family-continue"
+                class="primary-btn hidden"
+                onclick="completeFamily()">
+
+                CONTINUE →
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- LEVEL 5 LETTER -->
+    <!-- ========================= -->
+
+    <section id="letter-screen" class="screen">
+
+        <div class="game-card letter-card">
+
+            <div class="level-label">
+                LEVEL 05 • FROM MY HEART
+            </div>
+
+            <div
+                id="envelope"
+                class="envelope"
+                onclick="openLetter()">
+
+                <div class="envelope-icon">
+                    💌
+                </div>
+
+                <h2>There's a letter for you</h2>
+
+                <p>
+                    Tap to open
+                </p>
+
+            </div>
+
+
+            <div id="letter-content" class="letter-content hidden">
+
+                <h2>My Love ❤️</h2>
+
+                <p>
+                    Happy Birthday!
+                </p>
+
+                <p>
+                    I wanted to make something different for you this year.
+                    Something that isn't just a gift, but something I made
+                    especially for you.
+                </p>
+
+                <p>
+                    Thank you for being my wife, my partner, and the person
+                    I get to share this crazy life with.
+                </p>
+
+                <p>
+                    Thank you for everything you do for our family and for
+                    being an amazing mother to our little boy.
+                </p>
+
+                <p>
+                    I know I don't always say everything I feel,
+                    but I hope you always know how much I love you.
+                </p>
+
+                <p>
+                    I would choose you again.
+                </p>
+
+                <p>
+                    And again.
+                </p>
+
+                <p>
+                    And again.
+                </p>
+
+                <h3>
+                    I love you. ❤️
+                </h3>
+
+                <p class="signature">
+                    — Your Husband
+                </p>
+
+                <button
+                    class="primary-btn"
+                    onclick="showFinal()">
+
+                    UNLOCK MY SURPRISE 🎁
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- FINAL SCREEN -->
+    <!-- ========================= -->
+
+    <section id="final-screen" class="screen">
+
+        <div class="final-card">
+
+            <div class="confetti-title">
+                🎉 ❤️ 🎉
+            </div>
+
+            <div class="eyebrow">
+                ADVENTURE COMPLETE
+            </div>
+
+            <h1>
+                YOU DID IT!
+            </h1>
+
+            <div class="final-score">
+                ❤️ <span id="final-score">0</span>
+            </div>
+
+            <h2>
+                You unlocked your final surprise.
+            </h2>
+
+
+            <div
+                id="gift"
+                class="gift"
+                onclick="openGift()">
+
+                🎁
+
+            </div>
+
+            <p>
+                Tap the gift ❤️
+            </p>
+
+
+            <div id="gift-message" class="gift-message hidden">
+
+                <h2>
+                    Happy Birthday, My Love! 🎂❤️
+                </h2>
+
+                <p>
+                    This little adventure is only a tiny reminder
+                    of how much you mean to me.
+                </p>
+
+                <p>
+                    Here's to many more adventures together.
+                </p>
+
+                <h1>
+                    I LOVE YOU ❤️
+                </h1>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Toast notification -->
+    <div id="toast"></div>
+
+
+    <script src="script.js"></script>
 
 </body>
 </html>
