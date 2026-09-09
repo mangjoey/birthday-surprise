@@ -1,53 +1,92 @@
-/* =====================================================
-   BIRTHDAY ADVENTURE
-   ===================================================== */
+/* =========================================================
+   OUR BIRTHDAY ADVENTURE ❤️
+   ========================================================= */
+
+
+/* =========================================================
+   GAME STATE
+========================================================= */
 
 let totalScore = 0;
-let currentLevel = 1;
+
+let completedLevels = 0;
 
 
-/* =====================================================
-   GENERAL FUNCTIONS
-   ===================================================== */
+/* =========================================================
+   PHOTO CONFIGURATION
+========================================================= */
 
-function showScreen(id) {
+/*
+    Your photos live here:
 
-    document.querySelectorAll(".screen").forEach(screen => {
-        screen.classList.remove("active");
-    });
+    images/photo1.jpg
+    images/photo2.jpg
+    etc.
 
-    document.getElementById(id).classList.add("active");
+    Change the filenames below if necessary.
+*/
+
+const photos = [
+    "images/photo1.jpg",
+    "images/photo2.jpg",
+    "images/photo3.jpg",
+    "images/photo4.jpg",
+    "images/photo5.jpg",
+    "images/photo6.jpg",
+    "images/photo7.jpg",
+    "images/photo8.jpg",
+    "images/photo9.jpg",
+    "images/photo10.jpg"
+];
+
+
+/* =========================================================
+   SCREEN MANAGEMENT
+========================================================= */
+
+function showScreen(id, level = 0) {
+
+    document.querySelectorAll(".screen")
+        .forEach(screen => {
+
+            screen.classList.remove("active");
+
+        });
+
+
+    document.getElementById(id)
+        .classList.add("active");
+
+
+    document.getElementById("current-level")
+        .textContent = level;
+
 
     window.scrollTo({
         top: 0,
         behavior: "smooth"
     });
+
 }
 
+
+/* =========================================================
+   SCORE
+========================================================= */
 
 function addScore(points) {
 
     totalScore += points;
 
-    document.getElementById("score").textContent =
-        totalScore;
+    document.getElementById("score")
+        .textContent = totalScore;
 
 }
 
 
-function toast(message) {
-
-    const element = document.getElementById("toast");
-
-    element.textContent = message;
-
-    element.classList.add("show");
-
-    setTimeout(() => {
-        element.classList.remove("show");
-    }, 1800);
-}
-
+/* =========================================================
+   START
+========================================================= */
 
 function startGame() {
 
@@ -58,50 +97,77 @@ function startGame() {
 }
 
 
-/* =====================================================
-   LEVEL SYSTEM
-   ===================================================== */
+/* =========================================================
+   LEVEL OPENING
+========================================================= */
 
 function openLevel(level) {
 
-    if (level === 1) {
+    switch (level) {
 
-        showScreen("quiz-screen");
+        case 1:
 
-        startQuiz();
+            showScreen(
+                "quiz-screen",
+                1
+            );
 
-    }
+            startQuiz();
 
-    else if (level === 2) {
+            break;
 
-        showScreen("memory-screen");
 
-        startMemoryGame();
+        case 2:
 
-    }
+            showScreen(
+                "memory-screen",
+                2
+            );
 
-    else if (level === 3) {
+            startMemoryGame();
 
-        showScreen("hearts-screen");
+            break;
 
-        resetHeartGame();
 
-    }
+        case 3:
 
-    else if (level === 4) {
+            showScreen(
+                "hearts-screen",
+                3
+            );
 
-        showScreen("family-screen");
+            resetHeartGame();
 
-    }
+            break;
 
-    else if (level === 5) {
 
-        showScreen("letter-screen");
+        case 4:
+
+            showScreen(
+                "family-screen",
+                4
+            );
+
+            break;
+
+
+        case 5:
+
+            showScreen(
+                "letter-screen",
+                5
+            );
+
+            break;
 
     }
 
 }
 
+
+/* =========================================================
+   UNLOCK LEVEL
+========================================================= */
 
 function unlockLevel(level) {
 
@@ -110,50 +176,57 @@ function unlockLevel(level) {
             `level-card-${level}`
         );
 
+
+    if (!card) return;
+
+
     card.classList.remove("locked");
 
     card.classList.add("unlocked");
 
-    const lock = card.querySelector(".lock");
+
+    const lock =
+        card.querySelector(".lock");
 
     if (lock) {
         lock.remove();
     }
 
-    if (level === 2) {
 
-        card.innerHTML +=
-            `<button onclick="openLevel(2)">PLAY</button>`;
+    /*
+        Add the PLAY button only once.
+    */
 
-    }
+    if (!card.querySelector("button")) {
 
-    if (level === 3) {
+        const button =
+            document.createElement("button");
 
-        card.innerHTML +=
-            `<button onclick="openLevel(3)">PLAY</button>`;
+        button.textContent =
+            level === 5
+                ? "OPEN"
+                : "PLAY";
 
-    }
+        button.onclick = () =>
+            openLevel(level);
 
-    if (level === 4) {
-
-        card.innerHTML +=
-            `<button onclick="openLevel(4)">PLAY</button>`;
-
-    }
-
-    if (level === 5) {
-
-        card.innerHTML +=
-            `<button onclick="openLevel(5)">OPEN</button>`;
+        card.appendChild(button);
 
     }
 
 }
 
 
+/* =========================================================
+   COMPLETE LEVEL
+========================================================= */
+
 function completeLevel(level) {
 
+    completedLevels++;
+
     addScore(100);
+
 
     if (level < 5) {
 
@@ -161,24 +234,51 @@ function completeLevel(level) {
 
     }
 
+
     toast(
         `🎉 Level ${level} complete! +100 ❤️`
     );
 
+
     setTimeout(() => {
 
-        if (level < 5) {
-            showScreen("map-screen");
-        }
+        showScreen(
+            "map-screen"
+        );
 
     }, 1500);
 
 }
 
 
-/* =====================================================
+/* =========================================================
    LEVEL 1 — QUIZ
-   ===================================================== */
+========================================================= */
+
+
+/*
+    IMPORTANT:
+
+    These questions are intentionally generic.
+
+    You can replace them with your REAL memories.
+
+    Example:
+
+    question:
+    "Where did we go for our first date?"
+
+    answers:
+    [
+        "Singapore",
+        "Japan",
+        "Manila",
+        "Cebu"
+    ]
+
+    correct:
+    0
+*/
 
 const questions = [
 
@@ -190,15 +290,16 @@ const questions = [
             "Your cooking 😋",
             "Everything about you ❤️",
             "Your ability to steal the blanket 😂",
-            "Your terrible jokes 😆"
+            "Your jokes 😆"
         ],
 
         correct: 1
     },
 
+
     {
         question:
-            "What do I value most about our relationship?",
+            "What do I value most about our life together?",
 
         answers: [
             "Our adventures",
@@ -209,6 +310,7 @@ const questions = [
 
         correct: 2
     },
+
 
     {
         question:
@@ -224,6 +326,7 @@ const questions = [
         correct: 3
     },
 
+
     {
         question:
             "If I could choose my wife again, what would I do?",
@@ -231,16 +334,17 @@ const questions = [
         answers: [
             "Think about it",
             "Maybe",
-            "Absolutely choose you again ❤️",
+            "Choose you again ❤️",
             "Ask for a discount 😂"
         ],
 
         correct: 2
     },
 
+
     {
         question:
-            "What is my favorite place to be?",
+            "Where is my favorite place to be?",
 
         answers: [
             "At work",
@@ -256,12 +360,14 @@ const questions = [
 
 
 let quizIndex = 0;
+
 let quizScore = 0;
 
 
 function startQuiz() {
 
     quizIndex = 0;
+
     quizScore = 0;
 
     showQuestion();
@@ -271,86 +377,142 @@ function startQuiz() {
 
 function showQuestion() {
 
-    const question = questions[quizIndex];
+    const question =
+        questions[quizIndex];
 
-    document.getElementById("question").textContent =
+
+    document.getElementById(
+        "question"
+    ).textContent =
         question.question;
 
-    document.getElementById("question-number")
-        .textContent = quizIndex + 1;
 
-    document.getElementById("quiz-progress")
-        .style.width =
-        ((quizIndex + 1) / questions.length * 100) + "%";
+    document.getElementById(
+        "question-number"
+    ).textContent =
+        quizIndex + 1;
+
+
+    document.getElementById(
+        "quiz-progress"
+    ).style.width =
+        (
+            ((quizIndex + 1) /
+            questions.length) * 100
+        ) + "%";
+
 
     const answers =
-        document.getElementById("answers");
+        document.getElementById(
+            "answers"
+        );
+
 
     answers.innerHTML = "";
 
-    document.getElementById("quiz-feedback")
-        .textContent = "";
+
+    document.getElementById(
+        "quiz-feedback"
+    ).textContent = "";
 
 
-    question.answers.forEach((answer, index) => {
+    question.answers.forEach(
+        (answer, index) => {
 
-        const button =
-            document.createElement("button");
+            const button =
+                document.createElement(
+                    "button"
+                );
 
-        button.className = "answer";
 
-        button.textContent = answer;
+            button.className =
+                "answer";
 
-        button.onclick = () =>
-            answerQuestion(index);
 
-        answers.appendChild(button);
+            button.textContent =
+                answer;
 
-    });
+
+            button.onclick =
+                () =>
+                    answerQuestion(index);
+
+
+            answers.appendChild(button);
+
+        }
+    );
 
 }
 
 
 function answerQuestion(index) {
 
-    const question = questions[quizIndex];
+    const question =
+        questions[quizIndex];
+
 
     const buttons =
-        document.querySelectorAll(".answer");
+        document.querySelectorAll(
+            ".answer"
+        );
+
 
     buttons.forEach(button => {
+
         button.disabled = true;
+
     });
 
 
-    if (index === question.correct) {
+    if (
+        index === question.correct
+    ) {
 
-        buttons[index].classList.add("correct");
+        buttons[index]
+            .classList.add("correct");
 
-        quizScore += 1;
+
+        quizScore++;
+
 
         addScore(50);
 
-        document.getElementById("quiz-feedback")
-            .textContent =
-            "❤️ Correct! You know us very well.";
 
-        setTimeout(nextQuestion, 900);
+        document.getElementById(
+            "quiz-feedback"
+        ).textContent =
+            "❤️ Correct!";
+
+
+        setTimeout(
+            nextQuestion,
+            900
+        );
 
     }
 
     else {
 
-        buttons[index].classList.add("wrong");
+        buttons[index]
+            .classList.add("wrong");
 
-        buttons[question.correct]
-            .classList.add("correct");
 
-        document.getElementById("quiz-feedback")
-            .textContent =
-            "😜 Almost! But I'll give you another one.";
+        buttons[
+            question.correct
+        ].classList.add("correct");
 
-        setTimeout(nextQuestion, 1200);
+
+        document.getElementById(
+            "quiz-feedback"
+        ).textContent =
+            "😜 Almost!";
+
+
+        setTimeout(
+            nextQuestion,
+            1200
+        );
 
     }
 
@@ -361,7 +523,11 @@ function nextQuestion() {
 
     quizIndex++;
 
-    if (quizIndex < questions.length) {
+
+    if (
+        quizIndex <
+        questions.length
+    ) {
 
         showQuestion();
 
@@ -370,79 +536,134 @@ function nextQuestion() {
     else {
 
         toast(
-            `🏆 Quiz complete! ${quizScore}/5 correct!`
+            `🏆 ${quizScore}/5 correct!`
         );
+
 
         setTimeout(() => {
 
-            unlockLevel(2);
+            completeLevel(1);
 
-            showScreen("map-screen");
-
-        }, 1600);
+        }, 1500);
 
     }
 
 }
 
 
-/* =====================================================
-   LEVEL 2 — MEMORY MATCH
-   ===================================================== */
+/* =========================================================
+   LEVEL 2 — PHOTO MEMORY MATCH
+========================================================= */
 
-const memorySymbols = [
-    "❤️", "❤️",
-    "💍", "💍",
-    "👨‍👩‍👦", "👨‍👩‍👦",
-    "🎂", "🎂",
-    "🌹", "🌹",
-    "💋", "💋"
-];
+
+/*
+    We use 5 of your photos.
+
+    Each photo appears twice.
+
+    This creates 10 cards.
+*/
 
 let memoryFirst = null;
+
 let memorySecond = null;
+
 let memoryLocked = false;
+
 let memoryMatches = 0;
 
 
 function startMemoryGame() {
 
     memoryFirst = null;
+
     memorySecond = null;
+
     memoryLocked = false;
+
     memoryMatches = 0;
 
-    document.getElementById("matches")
-        .textContent = "0";
+
+    document.getElementById(
+        "matches"
+    ).textContent = "0";
+
+
+    const selectedPhotos = [
+
+        photos[0],
+        photos[1],
+        photos[2],
+        photos[3],
+        photos[4]
+
+    ];
+
+
+    let cards = [
+        ...selectedPhotos,
+        ...selectedPhotos
+    ];
+
+
+    cards =
+        cards.sort(
+            () => Math.random() - 0.5
+        );
+
 
     const grid =
-        document.getElementById("memory-grid");
+        document.getElementById(
+            "memory-grid"
+        );
+
 
     grid.innerHTML = "";
 
 
-    const shuffled =
-        [...memorySymbols]
-            .sort(() => Math.random() - 0.5);
+    cards.forEach(
+        (photo, index) => {
+
+            const card =
+                document.createElement(
+                    "button"
+                );
 
 
-    shuffled.forEach(symbol => {
+            card.className =
+                "memory-card";
 
-        const card =
-            document.createElement("button");
 
-        card.className = "memory-card";
+            card.dataset.photo =
+                photo;
 
-        card.dataset.symbol = symbol;
 
-        card.textContent = "?";
+            const image =
+                document.createElement(
+                    "img"
+                );
 
-        card.onclick = () =>
-            flipMemory(card);
 
-        grid.appendChild(card);
+            image.src = photo;
 
-    });
+            image.alt =
+                "Our memory";
+
+
+            card.appendChild(
+                image
+            );
+
+
+            card.onclick =
+                () =>
+                    flipMemory(card);
+
+
+            grid.appendChild(card);
+
+        }
+    );
 
 }
 
@@ -452,16 +673,19 @@ function flipMemory(card) {
     if (
         memoryLocked ||
         card === memoryFirst ||
-        card.classList.contains("matched")
+        card.classList.contains(
+            "matched"
+        )
     ) {
+
         return;
+
     }
 
 
-    card.classList.add("flipped");
-
-    card.textContent =
-        card.dataset.symbol;
+    card.classList.add(
+        "flipped"
+    );
 
 
     if (!memoryFirst) {
@@ -479,34 +703,52 @@ function flipMemory(card) {
 
 
     if (
-        memoryFirst.dataset.symbol ===
-        memorySecond.dataset.symbol
+        memoryFirst.dataset.photo ===
+        memorySecond.dataset.photo
     ) {
 
-        memoryFirst.classList.add("matched");
+        memoryFirst.classList.add(
+            "matched"
+        );
 
-        memorySecond.classList.add("matched");
+        memorySecond.classList.add(
+            "matched"
+        );
+
 
         memoryMatches++;
 
-        document.getElementById("matches")
-            .textContent = memoryMatches;
+
+        document.getElementById(
+            "matches"
+        ).textContent =
+            memoryMatches;
+
 
         addScore(50);
 
+
+        toast(
+            "❤️ You found a memory!"
+        );
+
+
         memoryFirst = null;
+
         memorySecond = null;
 
         memoryLocked = false;
 
 
-        if (memoryMatches === 6) {
+        if (
+            memoryMatches === 5
+        ) {
 
             setTimeout(() => {
 
                 completeLevel(2);
 
-            }, 700);
+            }, 1200);
 
         }
 
@@ -516,13 +758,13 @@ function flipMemory(card) {
 
         setTimeout(() => {
 
-            memoryFirst.classList.remove("flipped");
+            memoryFirst.classList
+                .remove("flipped");
 
-            memorySecond.classList.remove("flipped");
 
-            memoryFirst.textContent = "?";
+            memorySecond.classList
+                .remove("flipped");
 
-            memorySecond.textContent = "?";
 
             memoryFirst = null;
 
@@ -530,16 +772,16 @@ function flipMemory(card) {
 
             memoryLocked = false;
 
-        }, 800);
+        }, 900);
 
     }
 
 }
 
 
-/* =====================================================
+/* =========================================================
    LEVEL 3 — FIND HEARTS
-   ===================================================== */
+========================================================= */
 
 let heartsFound = 0;
 
@@ -548,100 +790,140 @@ function resetHeartGame() {
 
     heartsFound = 0;
 
-    document.getElementById("hearts-found")
-        .textContent = "0";
 
-    document.querySelectorAll(".hidden-heart")
-        .forEach(heart => {
+    document.getElementById(
+        "hearts-found"
+    ).textContent = "0";
 
-            heart.style.display = "block";
 
-        });
+    document.querySelectorAll(
+        ".hidden-heart"
+    ).forEach(heart => {
+
+        heart.style.display =
+            "block";
+
+    });
 
 }
 
 
 function findHeart(element) {
 
-    element.style.display = "none";
+    element.style.display =
+        "none";
+
 
     heartsFound++;
 
-    document.getElementById("hearts-found")
-        .textContent = heartsFound;
+
+    document.getElementById(
+        "hearts-found"
+    ).textContent =
+        heartsFound;
+
 
     addScore(50);
 
-    toast("❤️ You found one!");
 
-    if (heartsFound === 5) {
+    toast(
+        "❤️ You found one!"
+    );
+
+
+    if (
+        heartsFound === 5
+    ) {
 
         setTimeout(() => {
 
-            toast("🎉 You found every heart!");
+            toast(
+                "🎉 You found all my hearts!"
+            );
 
-            unlockLevel(4);
 
-            showScreen("map-screen");
+            completeLevel(3);
 
-        }, 800);
+        }, 1000);
 
     }
 
 }
 
 
-/* =====================================================
-   LEVEL 4 — FAMILY
-   ===================================================== */
+/* =========================================================
+   LEVEL 4 — FAMILY PHOTO GALLERY
+========================================================= */
 
-let familyVisited = new Set();
+const familyMessages = [
+
+    `
+    ❤️ This is one of the memories
+    that reminds me how lucky I am
+    to have you in my life.
+    `,
 
 
-function familyMessage(person) {
+    `
+    💕 You are one of the most
+    important people in my entire world.
+    I hope you always know that.
+    `,
 
-    let message = "";
+
+    `
+    👨‍👩‍👦 Our little family is one
+    of the greatest things that ever
+    happened to me.
+    `,
 
 
-    if (person === "me") {
+    `
+    ✨ Every memory we make together
+    is another chapter in the story
+    I never want to end.
+    `
 
-        message =
-            "👨 Me — I'm the luckiest man because I get to call you my wife.";
+];
+
+
+let familyVisited =
+    new Set();
+
+
+function showFamilyMemory(index) {
+
+    document.getElementById(
+        "family-message"
+    ).textContent =
+        familyMessages[index];
+
+
+    if (
+        !familyVisited.has(index)
+    ) {
+
+        familyVisited.add(index);
+
+        addScore(50);
 
     }
 
 
-    if (person === "wife") {
+    if (
+        familyVisited.size === 4
+    ) {
 
-        message =
-            "👩 You — You are the heart of our family. I hope you always know how loved you are.";
-
-    }
-
-
-    if (person === "jarren") {
-
-        message =
-            "👶 Jarren — Our little boy made our story even more beautiful.";
-
-    }
+        document.getElementById(
+            "family-continue"
+        ).classList.remove(
+            "hidden"
+        );
 
 
-    document.getElementById("family-message")
-        .textContent = message;
-
-
-    familyVisited.add(person);
-
-    addScore(50);
-
-
-    if (familyVisited.size === 3) {
-
-        document.getElementById("family-continue")
-            .classList.remove("hidden");
-
-        toast("🏆 Family achievement unlocked!");
+        toast(
+            "🏆 Family memories unlocked!"
+        );
 
     }
 
@@ -650,24 +932,30 @@ function familyMessage(person) {
 
 function completeFamily() {
 
-    unlockLevel(5);
-
     completeLevel(4);
 
 }
 
 
-/* =====================================================
+/* =========================================================
    LEVEL 5 — LETTER
-   ===================================================== */
+========================================================= */
 
 function openLetter() {
 
-    document.getElementById("envelope")
-        .classList.add("hidden");
+    document.getElementById(
+        "envelope"
+    ).classList.add(
+        "hidden"
+    );
 
-    document.getElementById("letter-content")
-        .classList.remove("hidden");
+
+    document.getElementById(
+        "letter-content"
+    ).classList.remove(
+        "hidden"
+    );
+
 
     addScore(100);
 
@@ -676,93 +964,141 @@ function openLetter() {
 
 function showFinal() {
 
-    document.getElementById("final-score")
-        .textContent = totalScore;
+    document.getElementById(
+        "final-score"
+    ).textContent =
+        totalScore;
 
-    showScreen("final-screen");
+
+    showScreen(
+        "final-screen",
+        5
+    );
+
 
     createConfetti();
 
 }
 
 
-/* =====================================================
+/* =========================================================
    FINAL GIFT
-   ===================================================== */
+========================================================= */
 
 function openGift() {
 
-    const gift =
-        document.getElementById("gift");
+    document.getElementById(
+        "gift"
+    ).style.display =
+        "none";
 
-    gift.style.display = "none";
 
-    document.getElementById("gift-message")
-        .classList.remove("hidden");
+    document.getElementById(
+        "gift-message"
+    ).classList.remove(
+        "hidden"
+    );
+
 
     createConfetti();
 
 }
 
 
-/* =====================================================
+/* =========================================================
    FLOATING HEARTS
-   ===================================================== */
+========================================================= */
+
+let heartsStarted = false;
+
 
 function createFloatingHearts() {
 
+    if (heartsStarted) {
+        return;
+    }
+
+
+    heartsStarted = true;
+
+
     const container =
-        document.getElementById("floating-hearts");
+        document.getElementById(
+            "floating-hearts"
+        );
+
 
     setInterval(() => {
 
         const heart =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         heart.textContent =
-            Math.random() > 0.5 ? "❤️" : "💕";
+            Math.random() > 0.5
+                ? "❤️"
+                : "💕";
 
-        heart.style.position = "fixed";
+
+        heart.style.position =
+            "fixed";
+
 
         heart.style.left =
-            Math.random() * 100 + "vw";
+            Math.random() * 100 +
+            "vw";
 
-        heart.style.bottom = "-30px";
+
+        heart.style.bottom =
+            "-30px";
+
 
         heart.style.fontSize =
-            (10 + Math.random() * 18) + "px";
+            (10 +
+            Math.random() * 18) +
+            "px";
+
 
         heart.style.opacity =
-            0.25 + Math.random() * 0.4;
+            0.15 +
+            Math.random() * 0.3;
 
-        heart.style.pointerEvents = "none";
 
-        heart.style.zIndex = "0";
-
-        container.appendChild(heart);
+        container.appendChild(
+            heart
+        );
 
 
         const duration =
-            4000 + Math.random() * 4000;
+            5000 +
+            Math.random() * 4000;
 
 
         heart.animate(
 
             [
+
                 {
                     transform:
-                        "translateY(0) rotate(0deg)"
+                        "translateY(0)"
                 },
 
                 {
                     transform:
-                        `translateY(-110vh) rotate(${Math.random() * 360}deg)`
+                        "translateY(-110vh)"
                 }
+
             ],
 
             {
-                duration: duration,
-                easing: "linear"
+
+                duration,
+
+                easing:
+                    "linear"
+
             }
 
         );
@@ -774,60 +1110,89 @@ function createFloatingHearts() {
 
         }, duration);
 
-    }, 800);
+
+    }, 900);
 
 }
 
 
-/* =====================================================
+/* =========================================================
    CONFETTI
-   ===================================================== */
+========================================================= */
 
 function createConfetti() {
 
     const emojis = [
+
         "❤️",
         "💕",
         "🎉",
         "✨",
         "🎊",
-        "💖"
+        "💖",
+        "🌹"
+
     ];
 
 
-    for (let i = 0; i < 50; i++) {
+    for (
+        let i = 0;
+        i < 60;
+        i++
+    ) {
 
         const piece =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         piece.textContent =
             emojis[
                 Math.floor(
-                    Math.random() * emojis.length
+                    Math.random() *
+                    emojis.length
                 )
             ];
 
-        piece.style.position = "fixed";
+
+        piece.style.position =
+            "fixed";
+
 
         piece.style.left =
-            Math.random() * 100 + "vw";
+            Math.random() * 100 +
+            "vw";
 
-        piece.style.top = "-30px";
+
+        piece.style.top =
+            "-30px";
+
 
         piece.style.fontSize =
-            (15 + Math.random() * 25) + "px";
+            (15 +
+            Math.random() * 25) +
+            "px";
 
-        piece.style.zIndex = "999";
 
-        piece.style.pointerEvents = "none";
+        piece.style.zIndex =
+            "999";
 
-        document.body.appendChild(piece);
+
+        piece.style.pointerEvents =
+            "none";
+
+
+        document.body.appendChild(
+            piece
+        );
 
 
         const animation =
             piece.animate(
 
                 [
+
                     {
                         transform:
                             "translateY(0) rotate(0deg)",
@@ -837,26 +1202,58 @@ function createConfetti() {
                     {
                         transform:
                             `translateY(110vh) rotate(${Math.random() * 720}deg)`,
-                        opacity: 0.8
+                        opacity: 0
                     }
+
                 ],
 
                 {
-                    duration:
-                        2500 + Math.random() * 2500,
 
-                    easing: "ease-out"
+                    duration:
+                        2500 +
+                        Math.random() * 2500,
+
+                    easing:
+                        "ease-out"
+
                 }
 
             );
 
 
-        animation.onfinish = () => {
+        animation.onfinish =
+            () => {
 
-            piece.remove();
+                piece.remove();
 
-        };
+            };
 
     }
 
 }
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        /*
+            Make sure the first photo
+            exists before starting.
+        */
+
+        console.log(
+            "❤️ Birthday Adventure loaded!"
+        );
+
+        console.log(
+            "Photos configured:",
+            photos
+        );
+
+    }
+);
